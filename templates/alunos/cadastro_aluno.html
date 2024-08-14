@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Aluno</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dist/css/adminlte.min.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.19/dist/sweetalert2.min.css">
+</head>
+
+<body>
+  <div class="wrapper">
+    {% include 'navbar.html' %}
+    {% include 'sidebar.html' %}
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="container-fluid">
+          <h3 style="margin-top: 3px;">Cadastro do Aluno e do Responsável</h3><br>
+          {% if messages %}
+          {% for message in messages %}
+          <script>
+            Swal.fire({
+              icon: '{{ message.tags }}',
+              title: '{{ message.tags|title }}',
+              text: '{{ message }}',
+            });
+          </script>
+          {% endfor %}
+          {% endif %}
+
+          <form id="alunoForm" method="post" action="">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="id_responsavel_nome">Nome Completo do Responsável</label>
+                  {{ aluno_form.responsavel_nome }}
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="id_responsavel_cpf">CPF do Responsável</label>
+                    {{ aluno_form.responsavel_cpf }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="id_responsavel_numero_identidade">Número de Identidade do Responsável</label>
+                    {{ aluno_form.responsavel_numero_identidade }}
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="id_responsavel_celular1">Celular 1 do Responsável</label>
+                    {{ aluno_form.responsavel_celular1 }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label ffor="id_responsavel_celular2">Celular 2 do Responsável</label>
+                    {{ aluno_form.responsavel_celular2 }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="id_responsavel_email">Email do Responsável</label>
+                  {{ aluno_form.responsavel_email }}
+                </div>
+
+                <div class="form-group">
+                  <label for="nome_completo">Nome Completo do Estudante</label>
+                  {{ aluno_form.nome_completo }}
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="data_nascimento">Data de Nascimento</label>
+                    {{ aluno_form.data_nascimento }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="cpf">CPF</label>
+                    {{ aluno_form.cpf }}
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="sexo">Sexo</label>
+                    {{ aluno_form.sexo }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="tem_gemeo">Tem Irmão Gêmeo?</label>
+                    {{ aluno_form.tem_gemeo }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="nome_mae">Nome Completo da Mãe</label>
+                  {{ aluno_form.nome_mae }}
+                </div>
+                <div class="form-group">
+                  <label for="necessidade_especial">Necessidade Especial</label>
+                  {{ aluno_form.necessidade_especial }}
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="bairro_escola">Bairro da Escola</label>
+                    {{ aluno_form.bairro_escola }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="modalidade_ensino">Modalidade de Ensino</label>
+                    {{ aluno_form.modalidade_ensino }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="serie_ano">Série/Ano</label>
+                  {{ aluno_form.serie_ano }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="primeira_escolha">1ª Opção: Unidade de Ensino</label>
+                  {{ aluno_form.primeira_escolha }}
+                </div>
+                <div class="form-group">
+                  <label for="segunda_escolha">2ª Opção: Unidade de Ensino</label>
+                  {{ aluno_form.segunda_escolha }}
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-3">
+                    <label for="cep">CEP</label>
+                    {{ aluno_form.cep }}
+                  </div>
+                  <div class="form-group col-md-9">
+                    <label for="endereco">Endereço</label>
+                    {{ aluno_form.endereco }}
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="bairro">Bairro</label>
+                    {{ aluno_form.bairro }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="numero_residencia">Número</label>
+                    {{ aluno_form.numero_residencia }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="complemento">Complemento</label>
+                  {{ aluno_form.complemento }}
+                </div>
+
+                <div class="form-group">
+                  <label style="background-color: #69bf7b; padding: 5px; border-radius: 5px; color: white;">Critérios:</label>
+                  <span style="color: red;"><b>(selecione somente se a criança se enquadra em algum dos critérios)</b></span>
+                  <div style="font-size: 14px;">
+                    <!-- Critérios de Renda -->
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria1" name="criterios_especiais" value="RENDA FAMLIAR ATÉ MEIO SALÁRIOS-MINIMO (DE R$ 660,00)">
+                      <label for="criteria1" style="margin-left: 5px;">RENDA FAMLIAR ATÉ MEIO SALÁRIOS-MINIMO (DE R$ 660,00)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria2" name="criterios_especiais" value="RENDA FAMLIAR ACIMA DE MEIO SALÁRIOS-MINIMO (DE R$ 660,00 Á R$ 1.320,00)">
+                      <label for="criteria2" style="margin-left: 5px;">RENDA FAMLIAR ACIMA DE MEIO SALÁRIOS-MINIMO (DE R$ 660,00 Á R$ 1.320,00)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria3" name="criterios_especiais" value="RENDA FAMLIAR ACIMA DE 1 ATÉ 2 SALÁRIOS-MINIMO (DE R$ 1.320,00 Á R$ 2.640,00)">
+                      <label for="criteria3" style="margin-left: 5px;">RENDA FAMLIAR ACIMA DE 1 ATÉ 2 SALÁRIOS-MINIMO (DE R$ 1.320,00 Á R$ 2.640,00)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria4" name="criterios_especiais" value="RENDA FAMLIAR ACIMA DE 2 ATÉ 3 SALÁRIOS-MINIMO (DE R$ 2.640,00 Á R$ 3.960,00)">
+                      <label for="criteria4" style="margin-left: 5px;">RENDA FAMLIAR ACIMA DE 2 ATÉ 3 SALÁRIOS-MINIMO (DE R$ 2.640,00 Á R$ 3.960,00)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria5" name="criterios_especiais" value="RENDA FAMLIAR ACIMA DE 3 ATÉ 4 SALÁRIOS-MINIMO (DE R$ 3.960,00 Á R$ 5.280,00)">
+                      <label for="criteria5" style="margin-left: 5px;">RENDA FAMLIAR ACIMA DE 3 ATÉ 4 SALÁRIOS-MINIMO (DE R$ 3.960,00 Á R$ 5.280,00)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria6" name="criterios_especiais" value="RENDA FAMLIAR ACIMA DE 4 ATÉ 6 SALÁRIOS-MINIMO (DE R$ 5.280,00 Á R$ 7.920,00)">
+                      <label for="criteria6" style="margin-left: 5px;">RENDA FAMLIAR ACIMA DE 4 ATÉ 6 SALÁRIOS-MINIMO (DE R$ 5.280,00 Á R$ 7.920,00)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria7" name="criterios_especiais" value="RENDA FAMLIAR ACIMA DE 6 ATÉ 8 SALÁRIOS-MINIMO (DE R$ 7.920,00 Á R$ 10.560,00)">
+                      <label for="criteria7" style="margin-left: 5px;">RENDA FAMLIAR ACIMA DE 6 ATÉ 8 SALÁRIOS-MINIMO (DE R$ 7.920,00 Á R$ 10.560,00)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria8" name="criterios_especiais" value="RENDA FAMLIAR ACIMA DE 8 ATÉ 10 SALÁRIOS-MINIMO (DE R$ 10.560,00 Á R$ 13.260,00)">
+                      <label for="criteria8" style="margin-left: 5px;">RENDA FAMLIAR ACIMA DE 8 ATÉ 10 SALÁRIOS-MINIMO (DE R$ 10.560,00 Á R$ 13.260,00)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria13" name="criterios_especiais" value="RENDA FAMLIAR ACIMA DE 10 SALÁRIOS-MINIMO (R$ 13.260,00)">
+                      <label for="criteria13" style="margin-left: 5px;">RENDA FAMLIAR ACIMA DE 10 SALÁRIOS-MINIMO (R$ 13.260,00)</label>
+                    </div>
+                    
+                    <!-- Critérios Adicionais -->
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria9" name="criterios_especiais" value="FAMÍLIAS MONOPARENTAIS (Refere-se a uma mãe ou um pai que vive sem cônjuge e com filhos dependentes)">
+                      <label for="criteria9" style="margin-left: 5px;">FAMÍLIAS MONOPARENTAIS (Refere-se a uma mãe ou um pai que vive sem cônjuge e com filhos dependentes)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria10" name="criterios_especiais" value="ATENDIMENTO EDUCACIONAL ESPECIALIZADO - AEE (Criança com deficiência, transtorno de espectro autista, altas habilidades)">
+                      <label for="criteria10" style="margin-left: 5px;">ATENDIMENTO EDUCACIONAL ESPECIALIZADO - AEE (Criança com deficiência, transtorno de espectro autista, altas habilidades)</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria11" name="criterios_especiais" value="RISCO NUTRICIONAL - Criança que se encontra abaixo da curva de crescimento ou com laudo de desnutrição">
+                      <label for="criteria11" style="margin-left: 5px;">RISCO NUTRICIONAL - Criança que se encontra abaixo da curva de crescimento ou com laudo de desnutrição</label>
+                    </div>
+                    
+                    <!-- Bonificação por Tempo de Inscrição -->
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="bonificacao_6_meses" name="criterios_especiais" value="BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 06 meses (5 pontos)">
+                      <label for="bonificacao_6_meses" style="margin-left: 5px;">BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 06 meses</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="bonificacao_12_meses" name="criterios_especiais" value="BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 12 meses (15 pontos)">
+                      <label for="bonificacao_12_meses" style="margin-left: 5px;">BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 12 meses</label>
+                    </div>
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="bonificacao_24_meses" name="criterios_especiais" value="BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 24 meses (25 pontos)">
+                      <label for="bonificacao_24_meses" style="margin-left: 5px;">BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 24 meses</label>
+                    </div>
+                  </div>
+                </div>
+                
+              
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">Registrar Aluno</button>
+            <hr>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% include 'footer.html' %}
+  </div>
+
+  <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'assets/dist/js/adminlte.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.19/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var cepField = document.getElementById('id_cep');
+      if (cepField) {
+        cepField.addEventListener('blur', function () {
+          var cep = this.value.replace(/\D/g, '');
+          if (cep != '') {
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+              .then(response => response.json())
+              .then(data => {
+                if (!("erro" in data)) {
+                  document.getElementById('id_endereco').value = data.logradouro;
+                  document.getElementById('id_bairro').value = data.bairro;
+                  document.getElementById('id_numero_residencia').value = data.complemento;
+                  document.getElementById('id_complemento').value = data.complemento;
+                } else {
+                  alert('CEP não encontrado.');
+                }
+              })
+              .catch(error => console.error('Error fetching CEP:', error));
+          }
+        });
+      } else {
+        console.error('Elemento com ID "id_cep" não encontrado.');
+      }
+
+      // Apply masks
+    $('#id_responsavel_cpf, #id_cpf').inputmask("999.999.999-99");  // CPF mask
+    $('#id_responsavel_celular1, #id_responsavel_celular2').inputmask("(99) 99999-9999");  // Phone number mask
+
+    var cpfField = document.getElementById('id_responsavel_cpf');
+if (cpfField) {
+    cpfField.addEventListener('blur', function () {
+        var cpf = this.value.replace(/\D/g, ''); // Remove os caracteres não numéricos
+        if (cpf !== '') {
+            fetch(`/get_responsavel_by_cpf/?cpf=${cpf}`)
+                .then(response => response.json())  // Certifique-se de que a resposta seja JSON
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('id_responsavel_nome').value = data.name;
+                        document.getElementById('id_responsavel_numero_identidade').value = data.numero_identidade;
+                        document.getElementById('id_responsavel_celular1').value = data.celular1;
+                        document.getElementById('id_responsavel_celular2').value = data.celular2;
+                        document.getElementById('id_responsavel_email').value = data.email;
+                    } else {
+                        //alert(data.message);
+                    }
+                })
+                .catch(error => console.error('Error fetching CPF:', error));
+        }
+    });
+}
+
+
+      {% if messages %}
+      {% for message in messages %}
+      Swal.fire({
+        icon: '{{ message.tags }}',
+        title: '{{ message }}',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      {% endfor %}
+      {% endif %}
+    });
+
+  </script>
+
+</body>
+
+</html>

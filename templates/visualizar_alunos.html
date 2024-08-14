@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualizar Alunos</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dist/css/adminlte.min.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<style>
+  .badge-success {
+    background-color: green;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  .badge-warning {
+    background-color: yellow;
+    color: black;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  .badge-secondary {
+    background-color: gray;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  .badge-apto {
+    background-color: blue;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+  }
+</style>
+
+<body>
+  <div class="wrapper">
+    {% include 'navbar.html' %}
+    {% include 'sidebar.html' %}
+
+    <div class="content-wrapper">
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Visualizar Alunos</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="container-fluid">
+          <!-- Formulário de Pesquisa -->
+          <form method="GET" action="{% url 'visualizar_alunos' %}">
+            <div class="input-group mb-3">
+              <input type="text" name="search" class="form-control" placeholder="Pesquisar por nome">
+              <button class="btn btn-outline-secondary" type="submit">Pesquisar</button>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <select id="modalidade" name="modalidade" class="form-control">
+                  <option value="">Selecione a Modalidade de Ensino</option>
+                  {% for modalidade in modalidades %}
+                  <option value="{{ modalidade.id }}">{{ modalidade.descricao }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-4">
+                <select id="serie_ano" name="serie_ano" class="form-control">
+                  <option value="">Selecione a Série / Ano / Período</option>
+                  {% for serie in series_anos %}
+                  <option value="{{ serie.id }}" data-modalidade="{{ serie.modalidade_ensino_id }}">
+                    {{ serie.descricao }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-primary" type="submit">Filtrar</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Tabela de Alunos -->
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Ord.</th>
+                <th>Pontuação</th>
+                <th>Nome</th>
+                <th>Dt. Nascimento</th>
+                <th>Dt. Cadastro</th>
+                <th>Hora Cadastro</th>
+                <th>Nome da Mãe</th>
+                <th>Série</th>
+                <th>Situação</th>
+                <th>Classificação</th>
+                <th style="text-align: center;">Opções</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for aluno in alunos %}
+              <tr>
+                <td style="text-align: center;">{{ aluno.id }}</td>
+                <td style="text-align: center;">{{ forloop.counter }}</td>
+                <td style="text-align: center;">{{ aluno.pontuacao }}</td>
+                <td>{{ aluno.nome_completo }}</td>
+                <td style="text-align: center;">{{ aluno.data_nascimento|date:"d/m/Y" }}</td>
+                <td style="text-align: center;">{{ aluno.data_cadastro|date:"d/m/Y" }}</td>
+                <td style="text-align: center;">{{ aluno.hora_cadastro|time:"H:i:s" }}</td>
+                <td>{{ aluno.nome_mae }}</td>
+                <td>{{ aluno.serie_ano.descricao }}</td>
+                <td>
+                  <span class="badge {% if aluno.situacao == 'Cadastrado' %}badge-success{% elif aluno.situacao == 'Aguardando...' %}badge-warning{% else %}badge-info{% endif %}">
+                    {{ aluno.situacao }}
+                  </span>
+                </td>
+                <td>
+                  {% if aluno.classificacao == "Classificado" %}
+                  <span class="badge badge-success">Classificado</span>
+                  {% else %}
+                  <span class="badge badge-warning">Aguardando...</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <!-- Botões de ação -->
+                  <a href="{% url 'informacao_aluno' aluno.id %}" class="btn btn-sm btn-info" title="Informação">
+                    <i class="fas fa-info-circle"></i>
+                  </a>
+                  <a href="{% url 'imprimir_aluno' aluno.id %}" target="_blank" class="btn btn-sm btn-secondary" title="Imprimir">
+                    <i class="fas fa-print"></i>
+                  </a>
+                  <a href="#" class="btn btn-sm btn-info" title="Anotações" data-bs-toggle="modal"
+                    data-bs-target="#anotacaoModal" data-nome="{{ aluno.nome_completo }}" data-id="{{ aluno.id }}">
+                    <i class="fas fa-sticky-note"></i>
+                  </a>
+                  <a href="#" class="btn btn-sm btn-success" title="Visualizar" data-bs-toggle="modal"
+                    data-bs-target="#visualizarAlunoModal" data-id="{{ aluno.id }}">
+                    <i class="fas fa-eye"></i>
+                  </a>
+                  <a href="{% url 'editar_aluno' aluno.id %}" class="btn btn-sm btn-warning" title="Editar">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  {% if request.user.tipo_usuario == 'AGENTE_ADMINISTRATIVO' %}
+                  <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#confirmAptoModal" data-id="{{ aluno.id }}" title="Alterar para APTO">
+                    <i class="fas fa-check-circle"></i>
+                  </button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {% include 'footer.html' %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'assets/dist/js/adminlte.min.js' %}"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    $(document).ready(function () {
+      $('#modalidade').change(function () {
+        var modalidadeId = $(this).val();
+        $('#serie_ano option').each(function () {
+          var modalidade = $(this).data('modalidade');
+          if (modalidadeId === modalidade.toString() || modalidadeId === '') {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+        $('#serie_ano').val('');
+      });
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var anotacaoModal = document.getElementById('anotacaoModal');
+      anotacaoModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var nome = button.getAttribute('data-nome');
+        var id = button.getAttribute('data-id');
+
+        var nomeInput = anotacaoModal.querySelector('#nomeAluno');
+        nomeInput.value = nome;
+
+        var alunoIdInput = anotacaoModal.querySelector('#alunoId');
+        alunoIdInput.value = id;
+
+        // Fazer uma requisição AJAX para buscar as observações do aluno
+        fetch(`/get_observacoes/${id}/`)
+          .then(response => response.json())
+          .then(data => {
+            var existingAnnotations = anotacaoModal.querySelector('#existingAnnotations');
+            existingAnnotations.innerHTML = '';  // Limpa as anotações existentes
+
+            if (data.observacao) {
+              existingAnnotations.innerHTML = `<div class="mb-3"><strong>Anotações anteriores:</strong><pre>${data.observacao}</pre></div>`;
+            } else {
+              existingAnnotations.innerHTML = '<p>Sem Anotações anteriores.</p>';
+            }
+          })
+          .catch(error => {
+            console.error('Erro ao carregar as Anotações:', error);
+            var existingAnnotations = anotacaoModal.querySelector('#existingAnnotations');
+            existingAnnotations.innerHTML = '<p>Erro ao carregar as Anotações.</p>';
+          });
+      });
+    });
+  </script>
+
+  {% if messages %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      {% for message in messages %}
+      Swal.fire({
+        icon: 'success',
+        title: '{{ message }}',
+        showConfirmButton: false,
+        timer: 2000
+      });
+      {% endfor %}
+    });
+  </script>
+  {% endif %}
+
+  <!-- Modal de Anotações -->
+  <div class="modal fade" id="anotacaoModal" tabindex="-1" aria-labelledby="anotacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="anotacaoModalLabel">Anotações: {{ user_name }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Exibir o nome do aluno -->
+          <div class="mb-3">
+            <label for="nomeAluno" class="form-label"><strong>Nome do Aluno:</strong></label>
+            <input type="text" class="form-control" id="nomeAluno" name="nome" readonly>
+          </div>
+          <!-- Exibir as observações existentes -->
+          <div id="existingAnnotations">
+            <p>Carregando anotações...</p>
+          </div>
+
+          <!-- Formulário para adicionar nova anotação -->
+          <form id="anotacaoForm" method="post" action="{% url 'salvar_observacao' %}">
+            {% csrf_token %}
+            <input type="hidden" id="alunoId" name="aluno_id">
+            <div class="mb-3">
+              <div class="col-sm-3">
+                <label for="dataContato" class="form-label">Data do contato:</label>
+                <input type="date" class="form-control" id="dataContato" name="data_contato" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="anotacao" class="form-label">Anotação:</label>
+              <textarea class="form-control" id="anotacao" name="anotacao" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar anotação</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Visualização de Aluno -->
+  <div class="modal fade" id="visualizarAlunoModal" tabindex="-1" role="dialog"
+    aria-labelledby="visualizarAlunoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="visualizarAlunoModalLabel">Comprovante de Inscrição</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Dados do Cadastro -->
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="row">
+                <h6 class="card-title mb-3"><strong>Dados do Cadastro:</strong></h6>
+                <div class="col-md-6 mb-3">
+                  <p><strong>Responsável pelo Cadastro:</strong> <span id="responsavelNome"></span></p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <p><strong>Protocolo:</strong> <span id="protocoloId"></span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Criança Cadastrada -->
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="row">
+                <h6 class="card-title mb-3"><strong>Criança Cadastrada:</strong></h6>
+                <div class="col-md-4 mb-3">
+                  <p><strong>Nome do Estudante:</strong> <span id="alunoNomeCompleto"></span></p>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <p><strong>Nome da Mãe:</strong> <span id="alunoNomeMae"></span></p>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <p><strong>Data de Nascimento:</strong> <span id="alunoDataNascimento"></span></p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <p><strong>Sexo:</strong> <span id="alunoSexo"></span></p>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <p><strong>Endereço:</strong> <span id="alunoEndereco"></span></p>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <p><strong>Bairro:</strong> <span id="alunoBairro"></span></p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <p><strong>CEP:</strong> <span id="alunoCep"></span></p>
+                </div>
+                <div class="col-md-8 mb-3">
+                  <p><strong>Telefone do Responsável:</strong> <span id="alunoResponsavelCelular1"></span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Unidade(s) Selecionada(s) -->
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="row">
+                <h6 class="card-title mb-3"><strong>Unidade(s) Selecionada(s):</strong></h6>
+                <div class="col-md-4 mb-3">
+                  <p><strong>Primeira Escolha:</strong> <span id="primeiraEscolha"></span></p>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <p><strong>Segunda Escolha:</strong> <span id="segundaEscolha"></span></p>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <p><strong>Solicitação Encerrada?</strong> <span id="solicitacaoEncerrada"></span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $('#visualizarAlunoModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var alunoId = button.data('id');
+
+      var modal = $(this);
+      modal.find('#responsavelNome').text('Carregando...');
+      modal.find('#protocoloId').text('Carregando...');
+      modal.find('#alunoNomeCompleto').text('Carregando...');
+      modal.find('#alunoDataNascimento').text('Carregando...');
+      modal.find('#alunoNomeMae').text('Carregando...');
+      modal.find('#alunoSexo').text('Carregando...');
+      modal.find('#alunoEndereco').text('Carregando...');
+      modal.find('#alunoBairro').text('Carregando...');
+      modal.find('#alunoCep').text('Carregando...');
+      modal.find('#alunoResponsavelCelular1').text('Carregando...');
+      modal.find('#primeiraEscolha').text('Carregando...');
+      modal.find('#segundaEscolha').text('Carregando...');
+      modal.find('#solicitacaoEncerrada').text('Carregando...');
+
+      $.ajax({
+        url: `/visualizar_aluno/${alunoId}/`,
+        success: function (data) {
+          modal.find('#responsavelNome').text(data.responsavel_nome);  // Nome do responsável pelo cadastro
+          modal.find('#protocoloId').text(data.protocolo);  // Protocolo, se houver
+          modal.find('#alunoNomeCompleto').text(data.aluno_nome_completo);
+          modal.find('#alunoDataNascimento').text(data.aluno_data_nascimento);
+          modal.find('#alunoNomeMae').text(data.aluno_nome_mae);
+          modal.find('#alunoSexo').text(data.aluno_sexo);
+          modal.find('#alunoEndereco').text(data.aluno_endereco);
+          modal.find('#alunoBairro').text(data.aluno_bairro);
+          modal.find('#alunoCep').text(data.aluno_cep);
+          modal.find('#alunoResponsavelCelular1').text(data.aluno_responsavel_celular1);
+          modal.find('#primeiraEscolha').text(data.primeira_escolha);
+          modal.find('#segundaEscolha').text(data.segunda_escolha);
+          modal.find('#solicitacaoEncerrada').text(data.solicitacao_encerrada ? 'Sim' : 'Não');
+        },
+        error: function () {
+          modal.find('.modal-body').text('Erro ao carregar os dados do aluno.');
+        }
+      });
+    });
+
+  </script>
+
+<!-- Modal de Confirmação para Alterar Situação para APTO -->
+<div class="modal fade" id="confirmAptoModal" tabindex="-1" aria-labelledby="confirmAptoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmAptoModalLabel">Confirmação de Alteração</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Tem certeza de que deseja alterar a situação para <strong>APTO</strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <form id="alterarSituacaoForm" method="post" action="">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary" style="background-color: blue; border-color: blue;">Confirmar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var confirmAptoModal = document.getElementById('confirmAptoModal');
+    confirmAptoModal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget; // Botão que acionou a modal
+      var alunoId = button.getAttribute('data-id'); // Extrai o ID do aluno do atributo data-id
+      
+      // Atualiza a URL de ação do formulário com o ID do aluno
+      var form = confirmAptoModal.querySelector('#alterarSituacaoForm');
+      form.action = `/aluno/${alunoId}/alterar-situacao-apto/`;
+    });
+  });
+</script>
+
+
+
+
+
+</body>
+
+</html>

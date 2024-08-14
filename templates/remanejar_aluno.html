@@ -1,0 +1,10 @@
+<form method="post">
+    {% csrf_token %}
+    <label for="nova_escola">Escolha a nova escola:</label>
+    <select id="nova_escola" name="nova_escola" class="form-control">
+        {% for escola in escolas %}
+        <option value="{{ escola.id }}">{{ escola.nome }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">Remanejar Aluno</button>
+</form>

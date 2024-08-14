@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            font-size: 12px;
+        }
+        .header {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+        .info-table td {
+            padding: 5px;
+            border: 1px solid #000;
+        }
+        .info-table th {
+            text-align: left;
+            padding: 5px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    ESTADO DO PARÁ<br>
+    PREFEITURA MUNICIPAL DE CANAÃ DOS CARAJÁS<br>
+    SISTEMA DE SOLICITAÇÃO DE MATRÍCULAS ON-LINE<br>
+    COMPROVANTE DE INSCRIÇÃO
+</div>
+
+<div class="section-title">DADOS DO CADASTRO</div>
+
+<table class="info-table">
+    <tr>
+        <th>Responsável pelo cadastro:</th>
+        <td>{{ aluno.responsavel_nome }}</td>
+        <th>CPF:</th>
+        <td>{{ aluno.responsavel_cpf }}</td>
+        <th>RG:</th>
+        <td>{{ aluno.responsavel_numero_identidade }}</td>
+        <th>Protocolo:</th>
+        <td>{{ aluno.id }}</td>
+    </tr>
+</table>
+
+<div class="section-title">Criança(s) cadastrada(s):</div>
+
+<table class="info-table">
+    <tr>
+        <th>Nome do(a) estudante / criança:</th>
+        <td>{{ aluno.nome_completo }}</td>
+        <th>Data de nascimento:</th>
+        <td>{{ aluno.data_nascimento }}</td>
+        <th>Nome da mãe:</th>
+        <td>{{ aluno.nome_mae }}</td>
+    </tr>
+    <tr>
+        <th>Endereço:</th>
+        <td colspan="5">{{ aluno.endereco }}, {{ aluno.bairro }} - {{ aluno.cep }}</td>
+    </tr>
+    <tr>
+        <th>Telefone do responsável:</th>
+        <td colspan="5">{{ aluno.responsavel_celular1 }} / {{ aluno.responsavel_celular2 }}</td>
+    </tr>
+</table>
+
+<div class="section-title">Unidade(s) Selecionada(s):</div>
+
+<table class="info-table">
+    <tr>
+        <th>Opção</th>
+        <th>Série</th>
+        <th>Unidade de Ensino</th>
+        <th>Endereço / Telefone</th>
+        <th>Solicitação encerrada?</th>
+    </tr>
+    <tr>
+        <td>1ª</td>
+        <td>{{ aluno.serie_ano.descricao }}</td>
+        <td>{{ aluno.primeira_escolha.nome }}</td>
+        <td>{{ aluno.primeira_escolha.endereco }} / {{ aluno.primeira_escolha.telefone }}</td>
+        <td>Não</td>
+    </tr>
+</table>
+
+</body>
+</html>

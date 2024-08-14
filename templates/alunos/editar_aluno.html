@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Aluno</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dist/css/adminlte.min.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.19/dist/sweetalert2.min.css">
+</head>
+
+<body>
+  <div class="wrapper">
+    {% include 'navbar.html' %}
+    {% include 'sidebar.html' %}
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="container-fluid">
+          <h3 style="margin-top: 3px;">Editar Cadastro do Aluno e do Responsável</h3><br>
+          {% if messages %}
+          {% for message in messages %}
+          <script>
+            Swal.fire({
+              icon: '{{ message.tags }}',
+              title: '{{ message.tags|title }}',
+              text: '{{ message }}',
+            });
+          </script>
+          {% endfor %}
+          {% endif %}
+
+          <form id="alunoForm" method="post" action="{% url 'editar_aluno' aluno.id %}">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="id_responsavel_nome">Nome Completo do Responsável</label>
+                  {{ aluno_form.responsavel_nome }}
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="id_responsavel_cpf">CPF do Responsável</label>
+                    {{ aluno_form.responsavel_cpf }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="id_responsavel_numero_identidade">Número de Identidade do Responsável</label>
+                    {{ aluno_form.responsavel_numero_identidade }}
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="id_responsavel_celular1">Celular 1 do Responsável</label>
+                    {{ aluno_form.responsavel_celular1 }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="id_responsavel_celular2">Celular 2 do Responsável</label>
+                    {{ aluno_form.responsavel_celular2 }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="id_responsavel_email">Email do Responsável</label>
+                  {{ aluno_form.responsavel_email }}
+                </div>
+
+                <div class="form-group">
+                  <label for="nome_completo">Nome Completo do Estudante</label>
+                  {{ aluno_form.nome_completo }}
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="data_nascimento">Data de Nascimento</label>
+                    {{ aluno_form.data_nascimento }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="cpf">CPF</label>
+                    {{ aluno_form.cpf }}
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="sexo">Sexo</label>
+                    {{ aluno_form.sexo }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="tem_gemeo">Tem Irmão Gêmeo?</label>
+                    {{ aluno_form.tem_gemeo }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="nome_mae">Nome Completo da Mãe</label>
+                  {{ aluno_form.nome_mae }}
+                </div>
+                <div class="form-group">
+                  <label for="necessidade_especial">Necessidade Especial</label>
+                  {{ aluno_form.necessidade_especial }}
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="bairro_escola">Bairro da Escola</label>
+                    {{ aluno_form.bairro_escola }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="modalidade_ensino">Modalidade de Ensino</label>
+                    {{ aluno_form.modalidade_ensino }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="serie_ano">Série/Ano</label>
+                  {{ aluno_form.serie_ano }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="primeira_escolha">1ª Opção: Unidade de Ensino</label>
+                  {{ aluno_form.primeira_escolha }}
+                </div>
+                <div class="form-group">
+                  <label for="segunda_escolha">2ª Opção: Unidade de Ensino</label>
+                  {{ aluno_form.segunda_escolha }}
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-3">
+                    <label for="cep">CEP</label>
+                    {{ aluno_form.cep }}
+                  </div>
+                  <div class="form-group col-md-9">
+                    <label for="endereco">Endereço</label>
+                    {{ aluno_form.endereco }}
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="bairro">Bairro</label>
+                    {{ aluno_form.bairro }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="numero_residencia">Número</label>
+                    {{ aluno_form.numero_residencia }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="complemento">Complemento</label>
+                  {{ aluno_form.complemento }}
+                </div>
+
+                <div class="form-group">
+                  <label style="background-color: #69bf7b; padding: 5px; border-radius: 5px; color: white;">Critérios:</label>
+                  <span style="color: red;"><b>(selecione somente se a criança se enquadra em algum dos critérios)</b></span>
+                  <div style="font-size: 14px;">
+                    <!-- Critérios de Renda -->
+                    {% for criterio in criterios %}
+                    <div style="display: flex; align-items: baseline; margin-bottom: 5px;">
+                      <input type="checkbox" id="criteria{{ forloop.counter }}" name="criterios_especiais" value="{{ criterio }}" {% if criterio in aluno.criterios_especiais %}checked{% endif %}>
+                      <label for="criteria{{ forloop.counter }}" style="margin-left: 5px;">{{ criterio }}</label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#confirmModal">Salvar Alterações</button>
+            <a href="{% url 'visualizar_alunos' %}" class="btn btn-secondary btn-lg">Cancelar</a>
+            <hr>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% include 'footer.html' %}
+  </div>
+
+  <!-- Modal de Confirmação -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmModalLabel">Confirmação de Edição</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza de que deseja salvar as alterações feitas?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" form="alunoForm">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'assets/dist/js/adminlte.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.19/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var cepField = document.getElementById('id_cep');
+      if (cepField) {
+        cepField.addEventListener('blur', function () {
+          var cep = this.value.replace(/\D/g, '');
+          if (cep != '') {
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+              .then(response => response.json())
+              .then(data => {
+                if (!("erro" in data)) {
+                  document.getElementById('id_endereco').value = data.logradouro;
+                  document.getElementById('id_bairro').value = data.bairro;
+                  document.getElementById('id_numero_residencia').value = data.complemento;
+                  document.getElementById('id_complemento').value = data.complemento;
+                } else {
+                  alert('CEP não encontrado.');
+                }
+              })
+              .catch(error => console.error('Error fetching CEP:', error));
+          }
+        });
+      } else {
+        console.error('Elemento com ID "id_cep" não encontrado.');
+      }
+
+      // Apply masks
+      $('#id_responsavel_cpf, #id_cpf').inputmask("999.999.999-99");  // CPF mask
+      $('#id_responsavel_celular1, #id_responsavel_celular2').inputmask("(99) 99999-9999");  // Phone number mask
+
+      var cpfField = document.getElementById('id_responsavel_cpf');
+      if (cpfField) {
+        cpfField.addEventListener('blur', function () {
+          var cpf = this.value.replace(/\D/g, ''); // Remove os caracteres não numéricos
+          if (cpf !== '') {
+            fetch(`/get_responsavel_by_cpf/?cpf=${cpf}`)
+              .then(response => response.json())  // Certifique-se de que a resposta seja JSON
+              .then(data => {
+                if (data.success) {
+                  document.getElementById('id_responsavel_nome').value = data.name;
+                  document.getElementById('id_responsavel_numero_identidade').value = data.numero_identidade;
+                  document.getElementById('id_responsavel_celular1').value = data.celular1;
+                  document.getElementById('id_responsavel_celular2').value = data.celular2;
+                  document.getElementById('id_responsavel_email').value = data.email;
+                } else {
+                  //alert(data.message);
+                }
+              })
+              .catch(error => console.error('Error fetching CPF:', error));
+          }
+        });
+      }
+
+      {% if messages %}
+      {% for message in messages %}
+      Swal.fire({
+        icon: '{{ message.tags }}',
+        title: '{{ message }}',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      {% endfor %}
+      {% endif %}
+    });
+  </script>
+</body>
+
+</html>

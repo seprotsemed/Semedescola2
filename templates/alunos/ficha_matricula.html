@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Comprovante de Inscrição</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+            /* Ajuste as margens conforme necessário */
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            margin: 0;
+            max-width: 100%;
+            /* Certifique-se de que o conteúdo ocupe toda a largura disponível */
+        }
+
+        .header,
+        .footer,
+        .content {
+            width: 100%;
+        }
+
+        .header {
+            text-align: left;
+            border-bottom: 2px solid #4CAF50;
+            margin-top: 0;
+            /* Remove a margem superior para subir o cabeçalho */
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
+        .header img {
+            width: 80px;
+            float: left;
+            margin-right: 60px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #4CAF50;
+        }
+
+        .header h2 {
+            font-size: 20px;
+            margin: 0;
+            color: #555;
+        }
+
+        .header hr {
+            border: 1px solid #4CAF50;
+            margin: 10px 0;
+        }
+
+        h3.section-title {
+            font-size: 18px;
+            margin-top: 30px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+            color: #4CAF50;
+        }
+
+        .data-table {
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #f8f8f8;
+            color: #4CAF50;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            position: relative;
+        }
+
+        .footer img {
+            width: 130px;
+            position: absolute;
+            right: 0;
+            bottom: -150px;
+        }
+
+        .centralizado {
+            text-align: center;
+            /* Centraliza o texto dentro desta div */
+            margin-top: 10px;
+            /* Ajuste a margem superior conforme necessário */
+            margin-bottom: 20px;
+            /* Ajuste a margem inferior conforme necessário */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Cabeçalho Moderno com logo e informações -->
+    <div class="header">
+        <img src="{{ logo_url }}" alt="Logo">
+        <h1>ESTADO DO PARÁ</h1>
+        <h2>PREFEITURA MUNICIPAL DE CANAÃ DOS CARAJÁS</h2>
+        <hr>
+        <div class="centralizado">
+            <h2>SISTEMA DE SOLICITAÇÃO DE MATRÍCULAS ON-LINE</h2>
+            <h3>COMPROVANTE DE INSCRIÇÃO</h3>
+        </div>
+    </div>
+    
+
+
+    <!-- Dados do Cadastro -->
+    <div>
+        <h3 class="section-title">Dados do Cadastro</h3>
+        <table class="data-table">
+            <tr>
+                <th>Responsável pelo cadastro:</th>
+                <td>{{ responsavel_nome }}</td>
+            </tr>
+            <tr>
+                <th>Protocolo:</th>
+                <td>{{ protocolo }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Criança(s) cadastrada(s) -->
+    <div>
+        <h3 class="section-title">Criança(s) Cadastrada(s)</h3>
+        <table class="data-table">
+            <tr>
+                <th>Nome do Estudante:</th>
+                <td>{{ aluno_nome_completo }}</td>
+            </tr>
+            <tr>
+                <th>Data de Nascimento:</th>
+                <td>{{ aluno_data_nascimento }}</td>
+            </tr>
+            <tr>
+                <th>Nome da Mãe:</th>
+                <td>{{ aluno_nome_mae }}</td>
+            </tr>
+            <tr>
+                <th>Sexo:</th>
+                <td>{{ aluno_sexo }}</td>
+            </tr>
+            <tr>
+                <th>Endereço:</th>
+                <td>{{ aluno_endereco }}</td>
+            </tr>
+            <tr>
+                <th>Bairro:</th>
+                <td>{{ aluno_bairro }}</td>
+            </tr>
+            <tr>
+                <th>CEP:</th>
+                <td>{{ aluno_cep }}</td>
+            </tr>
+            <tr>
+                <th>Telefone do Responsável:</th>
+                <td>{{ aluno_responsavel_celular1 }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Unidade(s) Selecionada(s) -->
+    <div>
+        <h3 class="section-title">Unidade(s) Selecionada(s)</h3>
+        <table class="data-table">
+            <tr>
+                <th>Primeira Escolha:</th>
+                <td>{{ primeira_escolha }}</td>
+            </tr>
+            <tr>
+                <th>Segunda Escolha:</th>
+                <td>{{ segunda_escolha }}</td>
+            </tr>
+            <tr>
+                <th>Solicitação Encerrada:</th>
+                <td>{{ solicitacao_encerrada }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="footer">
+        <p>Este é um documento gerado eletronicamente pelo Sistema de Solicitação de Matrículas On-line.</p>
+        <img src="data:image/png;base64,{{ qr_code_img }}" alt="QR Code">
+    </div>
+
+</body>
+
+</html>

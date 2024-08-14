@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Comprovante de Matrícula</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            text-align: center;
+        }
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .content {
+            border: 1px solid #000;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Prefeitura Municipal de Canaã dos Carajás</h1>
+        <h2>Sistema de Solicitação de Matrículas On-line</h2>
+        <h3>Comprovante de Inscrição</h3>
+    </div>
+
+    <div class="content">
+        <p><strong>Responsável pelo Cadastro:</strong> {{ aluno.responsavel_nome }}</p>
+        <p><strong>CPF:</strong> {{ aluno.responsavel_cpf }}</p>
+        <p><strong>RG:</strong> {{ aluno.responsavel_numero_identidade }}</p>
+        <p><strong>Nome do Estudante:</strong> {{ aluno.nome_completo }}</p>
+        <p><strong>Data de Nascimento:</strong> {{ aluno.data_nascimento }}</p>
+        <p><strong>Endereço:</strong> {{ aluno.endereco }}</p>
+        <p><strong>Telefone do Responsável:</strong> {{ aluno.responsavel_celular1 }}</p>
+        <!-- Outros detalhes necessários -->
+    </div>
+
+    <div class="footer">
+        <p>Emitido em: {{ aluno.data_cadastro }}</p>
+    </div>
+</body>
+</html>

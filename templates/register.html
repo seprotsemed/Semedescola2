@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SEMED | Registro</title>
+
+  {% load static %}
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'assets/dist/css/adminlte.min.css' %}">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <style>
+    .select-school {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 12px;
+      width: 100%;
+    }
+    .input-group .form-control,
+    .input-group .input-group-append {
+      display: flex;
+      align-items: center;
+    }
+    .input-group-text {
+      height: calc(2.25rem + 2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .input-group .fa {
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body class="hold-transition register-page">
+<div class="register-box">
+  <div class="card card-outline card-primary">
+    <div class="card-header text-center">
+      <a href="/" class="h1">
+        <i class="fas fa-graduation-cap"></i>
+        <b>Semed</b>ESCOLA
+      </a>
+    </div>
+    <div class="card-body">
+      <p class="login-box-msg">
+        <i class="fas fa-user"></i>
+        REGISTRE UM NOVO USUÁRIO
+      </p>
+
+      <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+          <input type="text" name="username" class="form-control" placeholder="Nome de Usuário">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="email" name="email" class="form-control" placeholder="Email">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" name="password1" class="form-control" placeholder="Senha">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" name="password2" class="form-control" placeholder="Digite Novamente a Senha">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <select name="tipo_usuario" id="tipo_usuario" class="form-control">
+            <option value="" disabled selected>Selecione o Tipo de Usuário</option>
+            {% for key, value in form.fields.tipo_usuario.choices %}
+              <option value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+          </select>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3" id="escola-field" style="display: none;">
+          <select name="escola" class="form-control select-school">
+            <option value="" disabled selected>Selecione Sua Escola</option>
+            {% for escola in form.fields.escola.queryset %}
+              <option value="{{ escola.id }}">{{ escola.nome }}</option>
+            {% endfor %}
+          </select>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-school"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <button type="submit" class="btn btn-primary btn-block">REGISTRAR</button>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'login' %}" class="btn btn-secondary btn-block">VOLTAR</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- jQuery -->
+<script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'assets/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'assets/dist/js/adminlte.min.js' %}"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const escolaField = document.getElementById('escola-field');
+    const tipoUsuarioField = document.getElementById('tipo_usuario');
+    tipoUsuarioField.addEventListener('change', function() {
+      if (tipoUsuarioField.value === 'AGENTE_ADMINISTRATIVO') {
+        escolaField.style.display = 'flex';
+      } else {
+        escolaField.style.display = 'none';
+      }
+    });
+
+    {% if messages %}
+      {% for message in messages %}
+        Swal.fire({
+          icon: '{{ message.tags }}',
+          title: '{{ message }}',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      {% endfor %}
+    {% endif %}
+  });
+</script>
+</body>
+</html>
