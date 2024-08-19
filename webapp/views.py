@@ -151,10 +151,10 @@ def cadastro_aluno(request):
 
 
 
-@login_required
-def visualizar_alunos(request):
-    alunos = Aluno.objects.all()
-    return render(request, 'visualizar_alunos.html', {'alunos': alunos})
+# @login_required
+# def visualizar_alunos(request):
+#     alunos = Aluno.objects.all()
+#     return render(request, 'visualizar_alunos.html', {'alunos': alunos})
 
 @csrf_exempt
 def get_responsavel_by_cpf(request):
@@ -194,10 +194,10 @@ def clean_cpf(self):
 
 
 
-@login_required
-def visualizar_alunos(request):
-    alunos = Aluno.objects.all()
-    return render(request, 'visualizar_alunos.html', {'alunos': alunos})
+# @login_required
+# def visualizar_alunos(request):
+#     alunos = Aluno.objects.all()
+#     return render(request, 'visualizar_alunos.html', {'alunos': alunos})
 
 
 def pesquisar_alunos(request):
@@ -225,6 +225,8 @@ def pesquisar_alunos(request):
 
 @login_required
 def visualizar_alunos(request):
+    # Inicialmente, filtra alunos com status 'ativo'
+    alunos = Aluno.objects.filter(status='ativo')
     modalidades = ModalidadeEnsino.objects.all()
     series_anos = SerieAno.objects.all()
 
@@ -236,22 +238,19 @@ def visualizar_alunos(request):
     if request.user.tipo_usuario == 'AGENTE_ADMINISTRATIVO':
         escola_vinculada = request.user.escola
         if escola_vinculada:
-            alunos = Aluno.objects.filter(primeira_escolha=escola_vinculada)
+            alunos = alunos.filter(primeira_escolha=escola_vinculada)
         else:
             alunos = Aluno.objects.none()  # Se não houver escola vinculada, não mostrar alunos
     else:
-        # Para outros tipos de usuário (administrador ou técnico pedagógico), mostrar todos os alunos
-        alunos = Aluno.objects.all()
-
-    # Aplicar filtros adicionais conforme selecionado
-    if modalidade_id:
-        alunos = alunos.filter(modalidade_ensino_id=modalidade_id)
-    
-    if serie_ano_id:
-        alunos = alunos.filter(serie_ano_id=serie_ano_id)
-    
-    if search_query:
-        alunos = alunos.filter(nome_completo__icontains=search_query)
+        # Para outros tipos de usuário (administrador ou técnico pedagógico), aplicar filtros adicionais
+        if modalidade_id:
+            alunos = alunos.filter(modalidade_ensino_id=modalidade_id)
+        
+        if serie_ano_id:
+            alunos = alunos.filter(serie_ano_id=serie_ano_id)
+        
+        if search_query:
+            alunos = alunos.filter(nome_completo__icontains=search_query)
 
     # Ordena os alunos pela pontuação em ordem decrescente
     alunos = alunos.order_by('-pontuacao')
@@ -264,6 +263,7 @@ def visualizar_alunos(request):
     }
 
     return render(request, 'visualizar_alunos.html', context)
+
 
 def get_series_anos(request):
     modalidade_id = request.GET.get('modalidade_id')
@@ -478,12 +478,12 @@ def index(request):
 @login_required
 def visualizar_aluno(request, aluno_id):
     aluno = get_object_or_404(Aluno, id=aluno_id)
-    responsavel_cadastro = aluno.responsavel_cadastro  # Aqui buscamos quem realmente fez o cadastro
+    responsavel_cadastro = aluno.responsavel_cadastro
 
     data = {
-        'responsavel_nome': responsavel_cadastro.username if responsavel_cadastro else 'N/A',  # Nome do responsável
-        'aluno_cadastro_id': aluno.id,  # ID do cadastro do aluno
-        'protocolo': aluno.id,  # Usando o ID do cadastro como protocolo
+        'responsavel_nome': responsavel_cadastro.username if responsavel_cadastro else 'N/A',
+        'aluno_cadastro_id': aluno.id,
+        'protocolo': aluno.id,
         'aluno_nome_completo': aluno.nome_completo,
         'aluno_data_nascimento': aluno.data_nascimento.strftime('%d/%m/%Y'),
         'aluno_nome_mae': aluno.nome_mae,
@@ -495,9 +495,12 @@ def visualizar_aluno(request, aluno_id):
         'primeira_escolha': aluno.primeira_escolha.nome if aluno.primeira_escolha else '',
         'segunda_escolha': aluno.segunda_escolha.nome if aluno.segunda_escolha else '',
         'solicitacao_encerrada': aluno.situacao,
+        'criterios_especiais': aluno.criterios_especiais,  # Certifique-se de que isso está correto
     }
 
     return JsonResponse(data)
+
+
 
 
 @login_required
@@ -634,9 +637,73 @@ def alterar_situacao_apto(request, aluno_id):
     aluno = get_object_or_404(Aluno, id=aluno_id)
     if request.method == 'POST':
         aluno.situacao = 'ALUNO APTO'
+        aluno.status = 'inativo'  # Altera o status para inativo
         aluno.save()
         messages.success(request, f'Situação do aluno {aluno.nome_completo} alterada para APTO com sucesso.')
-        return redirect('visualizar_alunos')
     else:
         messages.error(request, 'Método de requisição inválido.')
-        return redirect('visualizar_alunos')
+    
+    return redirect('visualizar_alunos')
+
+
+
+@login_required
+def alunos_apto(request):
+    # Filtra apenas alunos com status inativo
+    alunos_inativos = Aluno.objects.filter(status='inativo')
+    alunos_data = [
+        {
+            "id": aluno.id,
+            "nome_completo": aluno.nome_completo,
+            "data_nascimento": aluno.data_nascimento.strftime('%d/%m/%Y'),
+            "nome_mae": aluno.nome_mae,
+            "serie": aluno.serie_ano.descricao if aluno.serie_ano else '',
+            "data_cadastro": aluno.data_cadastro.strftime('%d/%m/%Y'),
+            "situacao": aluno.situacao,
+        }
+        for aluno in alunos_inativos
+    ]
+    return JsonResponse({"alunos": alunos_data})
+
+
+
+@login_required
+def informacao_aluno_apto(request, aluno_id):
+    aluno = Aluno.objects.get(id=aluno_id)
+
+    if aluno.situacao != "ALUNO APTO":
+        return JsonResponse({"error": "Aluno não está com a situação APTO"}, status=400)
+
+    data = {
+        "nome_completo": aluno.nome_completo,
+        "data_nascimento": aluno.data_nascimento.strftime('%d/%m/%Y'),
+        "nome_mae": aluno.nome_mae,
+        "situacao": aluno.situacao,
+        # Adicione outros campos que deseja retornar
+    }
+
+    return JsonResponse(data)
+
+
+@login_required
+def gerar_pdf_alunos_aptos(request):
+    # Filtra alunos aptos
+    alunos_aptos = Aluno.objects.filter(status='inativo')
+
+    # Gera o caminho completo da logo
+    logo_url = request.build_absolute_uri(static('assets/dist/img/logo.png'))
+
+    # Renderiza o template HTML com a lista de alunos aptos, incluindo a logo
+    html_string = render_to_string('alunos/alunos_aptos_pdf.html', {
+        'alunos': alunos_aptos,
+        'logo_url': logo_url,
+    })
+
+    # Converte o HTML para PDF
+    html = HTML(string=html_string)
+    pdf = html.write_pdf()
+
+    # Configura a resposta HTTP para enviar o PDF
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="alunos_aptos.pdf"'
+    return response

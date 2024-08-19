@@ -36,4 +36,7 @@ urlpatterns = [
     path('editar_escola/<int:escola_id>/', editar_escola, name='editar_escola'),  # View de edição
     path('atualizar_vagas/<int:escola_id>/', atualizar_vagas, name='atualizar_vagas'),
     path('aluno/<int:aluno_id>/alterar-situacao-apto/', alterar_situacao_apto, name='alterar_situacao_apto'),
+    path('alunos_apto/', views.alunos_apto, name='alunos_apto'),
+    path('informacao_aluno_apto/<int:aluno_id>/', views.informacao_aluno_apto, name='informacao_aluno_apto'),
+    path('gerar_pdf_alunos_aptos/', views.gerar_pdf_alunos_aptos, name='gerar_pdf_alunos_aptos'),
 ]

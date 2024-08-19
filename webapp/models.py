@@ -127,6 +127,16 @@ class Aluno(models.Model):
         blank=True, 
         related_name='cadastros_realizados'
     )
+
+    STATUS_CHOICES = [
+    ('ativo', 'Ativo'),
+    ('inativo', 'Inativo'),
+]
+
+    status = models.CharField(max_length=7, choices=STATUS_CHOICES, default='ativo')
+
+
+
     SEXO_CHOICES = [
         ('M', 'Masculino'),
         ('F', 'Feminino'),
@@ -161,6 +171,8 @@ class Aluno(models.Model):
     em_espera = models.BooleanField(default=False)
     classificacao = models.CharField(max_length=50, null=True, blank=True)
     observacao = models.TextField(null=True, blank=True)
+
+    criterios_especiais = models.JSONField(default=list)  # ou JSONField para versões anteriores
 
 
     criterios_pontuacao = {

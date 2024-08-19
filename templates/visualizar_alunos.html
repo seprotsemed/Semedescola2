@@ -63,34 +63,38 @@
         <div class="container-fluid">
           <!-- Formulário de Pesquisa -->
           <form method="GET" action="{% url 'visualizar_alunos' %}">
-            <div class="input-group mb-3">
-              <input type="text" name="search" class="form-control" placeholder="Pesquisar por nome">
-              <button class="btn btn-outline-secondary" type="submit">Pesquisar</button>
-            </div>
             <div class="row mb-3">
-              <div class="col-md-4">
-                <select id="modalidade" name="modalidade" class="form-control">
-                  <option value="">Selecione a Modalidade de Ensino</option>
-                  {% for modalidade in modalidades %}
-                  <option value="{{ modalidade.id }}">{{ modalidade.descricao }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="col-md-4">
-                <select id="serie_ano" name="serie_ano" class="form-control">
-                  <option value="">Selecione a Série / Ano / Período</option>
-                  {% for serie in series_anos %}
-                  <option value="{{ serie.id }}" data-modalidade="{{ serie.modalidade_ensino_id }}">
-                    {{ serie.descricao }}
-                  </option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="col-md-4">
-                <button class="btn btn-primary" type="submit">Filtrar</button>
-              </div>
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control" placeholder="Pesquisar por nome">
+                </div>
+                <div class="col-md-3">
+                    <select id="modalidade" name="modalidade" class="form-control">
+                        <option value="">Selecione a Modalidade de Ensino</option>
+                        {% for modalidade in modalidades %}
+                        <option value="{{ modalidade.id }}">{{ modalidade.descricao }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="serie_ano" name="serie_ano" class="form-control">
+                        <option value="">Selecione a Série / Ano / Período</option>
+                        {% for serie in series_anos %}
+                        <option value="{{ serie.id }}" data-modalidade="{{ serie.modalidade_ensino_id }}">
+                            {{ serie.descricao }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex justify-content-between">
+                    <button class="btn btn-primary" type="submit">Filtrar</button>
+                    <!-- Botão para abrir a modal -->
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#alunosAptoModal">
+                        Ver Alunos Aptos
+                    </button>
+                </div>
             </div>
-          </form>
+        </form>
+        
 
           <!-- Tabela de Alunos -->
           <table class="table table-bordered table-striped">
@@ -136,9 +140,10 @@
                 </td>
                 <td>
                   <!-- Botões de ação -->
-                  <a href="{% url 'informacao_aluno' aluno.id %}" class="btn btn-sm btn-info" title="Informação">
+                  <!-- <a href="#" class="btn btn-sm btn-info" title="Informação" data-bs-toggle="modal" data-bs-target="#alunoAptoModal" data-id="{{ aluno.id }}">
                     <i class="fas fa-info-circle"></i>
-                  </a>
+                </a> -->
+                
                   <a href="{% url 'imprimir_aluno' aluno.id %}" target="_blank" class="btn btn-sm btn-secondary" title="Imprimir">
                     <i class="fas fa-print"></i>
                   </a>
@@ -156,7 +161,8 @@
                   {% if request.user.tipo_usuario == 'AGENTE_ADMINISTRATIVO' %}
                   <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#confirmAptoModal" data-id="{{ aluno.id }}" title="Alterar para APTO">
                     <i class="fas fa-check-circle"></i>
-                  </button>
+                </button>
+                
                   {% endif %}
                 </td>
               </tr>
@@ -459,6 +465,87 @@
     });
   });
 </script>
+
+
+
+<!-- Modal para exibir alunos com situação APTO -->
+<div class="modal fade" id="alunosAptoModal" tabindex="-1" aria-labelledby="alunosAptoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="alunosAptoModalLabel">Alunos com Situação APTO</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div id="modalAlunoContent">
+                <a href="{% url 'gerar_pdf_alunos_aptos' %}" target="_blank" title="Gerar PDF">
+                  <i class="fas fa-file-pdf fa-2x"></i>
+              </a>
+              
+              </div>
+              <table class="table table-bordered">
+                  <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Nome Completo</th>
+                          <th>Data de Nascimento</th>
+                          <th>Nome da Mãe</th>
+                          <th>Série</th>
+                          <th>Data de Cadastro</th>
+                          <th>Situação</th>
+                      </tr>
+                  </thead>
+                  <tbody id="alunosAptoTableBody">
+                      <!-- Conteúdo será preenchido dinamicamente via JavaScript -->
+                  </tbody>
+              </table>
+          </div>
+          <div class="modal-footer">
+            <a href="{% url 'gerar_pdf_alunos_aptos' %}" target="_blank" class="btn btn-primary">
+                Gerar PDF
+            </a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+        
+      </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var alunosAptoModal = document.getElementById('alunosAptoModal');
+
+    alunosAptoModal.addEventListener('show.bs.modal', function () {
+        var tableBody = alunosAptoModal.querySelector('#alunosAptoTableBody');
+        tableBody.innerHTML = '<tr><td colspan="7">Carregando...</td></tr>';
+
+        fetch('/alunos_apto/')
+            .then(response => response.json())
+            .then(data => {
+                tableBody.innerHTML = '';  // Limpa o conteúdo anterior
+                data.alunos.forEach(aluno => {
+                    var row = `
+                        <tr>
+                            <td>${aluno.id}</td>
+                            <td>${aluno.nome_completo}</td>
+                            <td>${aluno.data_nascimento}</td>
+                            <td>${aluno.nome_mae}</td>
+                            <td>${aluno.serie}</td>
+                            <td>${aluno.data_cadastro}</td>
+                            <td>${aluno.situacao}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => {
+                tableBody.innerHTML = '<tr><td colspan="7">Erro ao carregar os dados dos alunos.</td></tr>';
+            });
+    });
+});
+</script>
+
+
 
 
 

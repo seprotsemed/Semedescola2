@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Alunos Aptos</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            margin: 0;
+            max-width: 100%;
+        }
+
+        .header,
+        .footer,
+        .content {
+            width: 100%;
+        }
+
+        .header {
+            text-align: left;
+            border-bottom: 2px solid #4CAF50;
+            margin-top: 0;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
+        .header img {
+            width: 80px;
+            float: left;
+            margin-right: 60px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #4CAF50;
+        }
+
+        .header h2 {
+            font-size: 20px;
+            margin: 0;
+            color: #555;
+        }
+
+        .header hr {
+            border: 1px solid #4CAF50;
+            margin: 10px 0;
+        }
+
+        h3.section-title {
+            font-size: 18px;
+            margin-top: 30px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+            color: #4CAF50;
+        }
+
+        .data-table {
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #f8f8f8;
+            color: #4CAF50;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            position: relative;
+        }
+
+        .footer img {
+            width: 130px;
+            position: absolute;
+            right: 0;
+            bottom: -150px;
+        }
+
+        .centralizado {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Cabeçalho -->
+    <div class="header">
+        <img src="{{ logo_url }}" alt="Logo">
+        <h1>ESTADO DO PARÁ</h1>
+        <h2>PREFEITURA MUNICIPAL DE CANAÃ DOS CARAJÁS</h2>
+        <hr>
+        <div class="centralizado">
+            <h2>LISTA DE ALUNOS APTOS</h2>
+        </div>
+    </div>
+
+    <!-- Lista de Alunos Aptos -->
+    <div>
+        <h3 class="section-title">Alunos Aptos</h3>
+        <table class="data-table" style="font-size: 11px;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome Completo</th>
+                    <th>Data de Nascimento</th>
+                    <th>Nome da Mãe</th>
+                    <th>Série</th>
+                    <th>Data de Cadastro</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for aluno in alunos %}
+                <tr>
+                    <td>{{ aluno.id }}</td>
+                    <td>{{ aluno.nome_completo }}</td>
+                    <td>{{ aluno.data_nascimento|date:"d/m/Y" }}</td>
+                    <td>{{ aluno.nome_mae }}</td>
+                    <td>{{ aluno.serie_ano.descricao }}</td>
+                    <td>{{ aluno.data_cadastro|date:"d/m/Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="footer">
+        <p>Este é um documento gerado eletronicamente pelo Sistema de Solicitação de Matrículas On-line.</p>
+    </div>
+
+</body>
+
+</html>
