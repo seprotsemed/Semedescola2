@@ -19,6 +19,8 @@ from io import BytesIO
 from datetime import datetime
 from .forms import EscolaForm  # Certifique-se de importar o formulário corretamente
 from .utils import classificar_alunos  # Import the utility function
+import csv
+import io  # Importação necessária
 
 
 @login_required
@@ -707,3 +709,66 @@ def gerar_pdf_alunos_aptos(request):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="alunos_aptos.pdf"'
     return response
+
+
+@login_required
+def upload_csv(request):
+    if request.method == 'POST':
+        csv_file = request.FILES['csv_file']
+
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'Este não é um arquivo CSV.')
+            return redirect('upload_csv')
+
+        try:
+            data_set = csv_file.read().decode('UTF-8')
+            io_string = io.StringIO(data_set)
+            reader = csv.DictReader(io_string)
+
+            for row in reader:
+                # Busca os objetos das ForeignKeys pelo ID ou algum campo identificador
+                modalidade_ensino = ModalidadeEnsino.objects.get(id=row['modalidade_ensino_id'])
+                serie_ano = SerieAno.objects.get(id=row['serie_ano_id'])
+                necessidade_especial = NecessidadeEspecial.objects.get(id=row['necessidade_especial_id']) if row['necessidade_especial_id'] else None
+                primeira_escolha = Escola.objects.get(id=row['primeira_escolha_id'])
+                segunda_escolha = Escola.objects.get(id=row['segunda_escolha_id']) if row['segunda_escolha_id'] else None
+
+                # Cria ou atualiza o aluno
+                Aluno.objects.update_or_create(
+                    cpf=row['cpf'],
+                    defaults={
+                        'nome_completo': row['nome_completo'],
+                        'data_nascimento': row['data_nascimento'],
+                        'sexo': row['sexo'],
+                        'tem_gemeo': row['tem_gemeo'],
+                        'nome_mae': row['nome_mae'],
+                        'responsavel_nome': row['responsavel_nome'],
+                        'responsavel_cpf': row['responsavel_cpf'],
+                        'responsavel_numero_identidade': row['responsavel_numero_identidade'],
+                        'responsavel_celular1': row['responsavel_celular1'],
+                        'responsavel_celular2': row['responsavel_celular2'],
+                        'responsavel_email': row['responsavel_email'],
+                        'bairro_escola': row['bairro_escola'],
+                        'cep': row['cep'],
+                        'endereco': row['endereco'],
+                        'bairro': row['bairro'],
+                        'numero_residencia': row['numero_residencia'],
+                        'complemento': row['complemento'],
+                        'criterios_especiais': row['criterios_especiais'],
+                        'modalidade_ensino': modalidade_ensino,
+                        'serie_ano': serie_ano,
+                        'necessidade_especial': necessidade_especial,
+                        'primeira_escolha': primeira_escolha,
+                        'segunda_escolha': segunda_escolha,
+                        'status': row['status'],
+                    }
+                )
+
+            messages.success(request, 'Arquivo CSV processado com sucesso.')
+            return redirect('visualizar_alunos')
+
+        except Exception as e:
+            messages.error(request, f'Erro ao processar o arquivo CSV: {str(e)}')
+            return redirect('upload_csv')
+
+    return render(request, 'upload_csv.html')

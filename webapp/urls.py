@@ -39,4 +39,5 @@ urlpatterns = [
     path('alunos_apto/', views.alunos_apto, name='alunos_apto'),
     path('informacao_aluno_apto/<int:aluno_id>/', views.informacao_aluno_apto, name='informacao_aluno_apto'),
     path('gerar_pdf_alunos_aptos/', views.gerar_pdf_alunos_aptos, name='gerar_pdf_alunos_aptos'),
+    path('upload_csv/', views.upload_csv, name='upload_csv'),
 ]

@@ -243,7 +243,7 @@
       {% for message in messages %}
       Swal.fire({
         icon: 'success',
-        title: '{{ message }}',
+        title: "{{ message|escapejs }}",  // Usando escapejs para evitar problemas com caracteres especiais
         showConfirmButton: false,
         timer: 2000
       });
@@ -251,6 +251,7 @@
     });
   </script>
   {% endif %}
+
 
   <!-- Modal de Anotações -->
   <div class="modal fade" id="anotacaoModal" tabindex="-1" aria-labelledby="anotacaoModalLabel" aria-hidden="true">
