@@ -21,6 +21,7 @@ from .forms import EscolaForm  # Certifique-se de importar o formulário correta
 from .utils import classificar_alunos  # Import the utility function
 import csv
 import io  # Importação necessária
+from .forms import ModalidadeEnsinoForm, SerieAnoForm
 
 
 @login_required
@@ -542,6 +543,9 @@ def gerar_pdf_aluno(request, aluno_id):
     # Gera o caminho completo da logo
     logo_url = request.build_absolute_uri(static('assets/dist/img/logo.png'))
 
+    # Como os critérios especiais já são armazenados como lista, apenas os atribuímos diretamente
+    criterios_especiais = aluno.criterios_especiais if aluno.criterios_especiais else []
+
     # Dados para o template
     context = {
         'logo_url': logo_url,
@@ -559,7 +563,9 @@ def gerar_pdf_aluno(request, aluno_id):
         'primeira_escolha': aluno.primeira_escolha.nome if aluno.primeira_escolha else '',
         'segunda_escolha': aluno.segunda_escolha.nome if aluno.segunda_escolha else '',
         'solicitacao_encerrada': aluno.situacao,
+        'criterios_especiais': criterios_especiais,  # Adiciona os critérios especiais ao contexto
         'qr_code_img': img_str,  # Adiciona o QR code ao contexto, já codificado em Base64
+        'aluno_data_cadastro': aluno.data_cadastro.strftime('%d/%m/%Y %H:%M:%S'),  # Formato de data e hora
     }
     
     # Renderiza o template com os dados do aluno
@@ -574,6 +580,7 @@ def gerar_pdf_aluno(request, aluno_id):
     response['Content-Disposition'] = f'inline; filename="ficha_matricula_{aluno.nome_completo}.pdf"'
 
     return response
+
 
 
 
@@ -760,7 +767,7 @@ def upload_csv(request):
                         'necessidade_especial': necessidade_especial,
                         'primeira_escolha': primeira_escolha,
                         'segunda_escolha': segunda_escolha,
-                        'status': row['status'],
+                        'status': 'ativo',  # Define o status como "ativo"
                     }
                 )
 
@@ -772,3 +779,24 @@ def upload_csv(request):
             return redirect('upload_csv')
 
     return render(request, 'upload_csv.html')
+
+
+def criar_modalidade_ensino(request):
+    if request.method == 'POST':
+        form = ModalidadeEnsinoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_escolas')  # Redireciona para a lista de escolas, ou ajuste conforme necessário
+    else:
+        form = ModalidadeEnsinoForm()
+    return render(request, 'criar_modalidade_ensino.html', {'form': form})
+
+def criar_serie_ano(request):
+    if request.method == 'POST':
+        form = SerieAnoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_escolas')  # Redireciona para a lista de escolas, ou ajuste conforme necessário
+    else:
+        form = SerieAnoForm()
+    return render(request, 'criar_serie_ano.html', {'form': form})

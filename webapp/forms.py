@@ -120,7 +120,7 @@ class AlunoForm(forms.ModelForm):
             'responsavel_celular2', 'responsavel_email', 'necessidade_especial', 'bairro_escola', 
             'modalidade_ensino', 'serie_ano', 'primeira_escolha', 'segunda_escolha', 
             'cep', 'endereco', 'bairro', 'numero_residencia', 'complemento', 
-            'criterios_especiais',
+            'criterios_especiais'
         ]
         widgets = {
             'nome_completo': forms.TextInput(attrs={'class': 'form-control'}),
@@ -146,7 +146,14 @@ class AlunoForm(forms.ModelForm):
             'bairro': forms.TextInput(attrs={'class': 'form-control'}),
             'numero_residencia': forms.TextInput(attrs={'class': 'form-control'}),
             'complemento': forms.TextInput(attrs={'class': 'form-control'}),
-            'criterios_especiais': forms.CheckboxSelectMultiple()  # Permitir múltiplas escolhas
+            'criterios_especiais': forms.CheckboxSelectMultiple(),  # Permitir múltiplas escolhas
+            'data_cadastro': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'data_atualizacao': forms.TextInput(attrs={'readonly': 'readonly'}),
+        }
+        error_messages = {
+            'cpf': {
+                'unique': "Um aluno com este CPF já está cadastrado.",
+            },
         }
 
     def clean_responsavel_cpf(self):
@@ -207,3 +214,19 @@ class EscolaForm(forms.ModelForm):
             'vagas_disponiveis': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
+class ModalidadeEnsinoForm(forms.ModelForm):
+    class Meta:
+        model = ModalidadeEnsino
+        fields = ['descricao']
+        widgets = {
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class SerieAnoForm(forms.ModelForm):
+    class Meta:
+        model = SerieAno
+        fields = ['descricao', 'modalidade_ensino']
+        widgets = {
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+            'modalidade_ensino': forms.Select(attrs={'class': 'form-control'}),
+        }

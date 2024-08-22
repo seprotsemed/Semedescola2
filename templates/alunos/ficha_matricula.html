@@ -8,7 +8,6 @@
         @page {
             size: A4;
             margin: 20mm;
-            /* Ajuste as margens conforme necessário */
         }
 
         body {
@@ -16,7 +15,6 @@
             color: #333;
             margin: 0;
             max-width: 100%;
-            /* Certifique-se de que o conteúdo ocupe toda a largura disponível */
         }
 
         .header,
@@ -27,86 +25,93 @@
 
         .header {
             text-align: left;
-            border-bottom: 2px solid #4CAF50;
-            margin-top: 0;
-            /* Remove a margem superior para subir o cabeçalho */
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            border-bottom: 2px solid #000000;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
         }
 
         .header img {
-            width: 80px;
+            width: 70px;
             float: left;
-            margin-right: 60px;
+            margin-right: 20px;
         }
 
         .header h1 {
-            font-size: 24px;
+            font-size: 20px;
             margin: 0;
-            color: #4CAF50;
+            color: #000000;
         }
 
         .header h2 {
-            font-size: 20px;
+            font-size: 15px;
             margin: 0;
             color: #555;
         }
 
         .header hr {
-            border: 1px solid #4CAF50;
-            margin: 10px 0;
+            border: 1px solid #000000;
+            margin: 30px 0;
         }
 
         h3.section-title {
-            font-size: 18px;
-            margin-top: 30px;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 5px;
-            color: #4CAF50;
+            font-size: 19px;
+            margin-top: 20px;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 3px;
+            color: #000000;
         }
 
         .data-table {
             width: 100%;
             max-width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 14px;
+            margin-bottom: 15px;
+            font-size: 12px;
         }
 
         .data-table th,
         .data-table td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 5px;
             text-align: left;
         }
 
         .data-table th {
             background-color: #f8f8f8;
-            color: #4CAF50;
+            color: #000000;
         }
 
         .footer {
-            margin-top: 30px;
+            margin-top: 20px;
             text-align: center;
-            font-size: 12px;
+            font-size: 14px;
             color: #999;
             position: relative;
         }
 
         .footer img {
-            width: 130px;
+            width: 100px;
             position: absolute;
             right: 0;
-            bottom: -150px;
+            bottom: -120px;
+        }
+
+        .signature {
+            margin-top: 50px;
+            border-top: 1px solid #000000;
+            width: 50%;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 5px;
+            font-size: 12px;
+            color: #333;
         }
 
         .centralizado {
             text-align: center;
-            /* Centraliza o texto dentro desta div */
-            margin-top: 10px;
-            /* Ajuste a margem superior conforme necessário */
-            margin-bottom: 20px;
-            /* Ajuste a margem inferior conforme necessário */
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -125,24 +130,14 @@
         </div>
     </div>
     
-
-
     <!-- Dados do Cadastro -->
     <div>
         <h3 class="section-title">Dados do Cadastro</h3>
-        <table class="data-table">
-            <tr>
-                <th>Responsável pelo cadastro:</th>
-                <td>{{ responsavel_nome }}</td>
-            </tr>
-            <tr>
-                <th>Protocolo:</th>
-                <td>{{ protocolo }}</td>
-            </tr>
-        </table>
+        <p>Responsável pelo cadastro: <strong>{{ responsavel_nome }}</strong></p>
+        <p>Protocolo: <strong>{{ protocolo }}</strong></p>
     </div>
 
-   <!-- Criança(s) cadastrada(s) -->
+    <!-- Criança(s) cadastrada(s) -->
 <div>
     <h3 class="section-title">Criança(s) Cadastrada(s)</h3>
     <table class="data-table" style="width: 100%;">
@@ -169,54 +164,60 @@
         <tr>
             <th>CEP:</th>
             <th>Telefone do Responsável:</th>
-            <th></th> <!-- Célula vazia para completar a terceira coluna -->
+            <th></th>
         </tr>
         <tr>
             <td>{{ aluno_cep }}</td>
             <td>{{ aluno_responsavel_celular1 }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>Data de Cadastro:</th>
+            <th>Data de Atualização:</th>
+            <th></th> <!-- Célula vazia para completar a terceira coluna -->
+        </tr>
+        <tr>
+            <td>{{ aluno_data_cadastro }}</td>
+            <td>{{ aluno_data_atualizacao }}</td>
             <td></td> <!-- Célula vazia para completar a terceira coluna -->
         </tr>
     </table>
 </div>
 
 
-
-<!-- Unidade(s) Selecionada(s) -->
-<div>
-    <h3 class="section-title">Unidade(s) Selecionada(s)</h3>
-    <table class="data-table" style="width: 100%;">
-        <tr>
-            <th>Primeira Escolha:</th>
-            <th>Segunda Escolha:</th>
-            <th>Criterios:</th> <!-- Novo cabeçalho para critérios -->
-        </tr>
-        <tr>
-            <td>{{ primeira_escolha }}</td>
-            <td>{{ segunda_escolha }}</td>
-            <td>
-                <ul>
-                    {% if criterios_especiais %}
-                        {% for criterio in criterios_especiais %}
-                            <li>{{ criterio }}</li>
-                        {% endfor %}
-                    {% else %}
-                        <li>Nenhum critério especial selecionado</li>
-                    {% endif %}
-                </ul>
-            </td>
-        </tr>
-    </table>
-</div>
-
-
-
-    
-
-
+    <!-- Unidade(s) Selecionada(s) -->
+    <div>
+        <h3 class="section-title">Unidade(s) Selecionada(s)</h3>
+        <table class="data-table" style="width: 100%;">
+            <tr>
+                <th>Primeira Escolha:</th>
+                <th>Segunda Escolha:</th>
+                <th>Criterios:</th>
+            </tr>
+            <tr>
+                <td>{{ primeira_escolha }}</td>
+                <td>{{ segunda_escolha }}</td>
+                <td>
+                    <ul>
+                        {% if criterios_especiais %}
+                            {% for criterio in criterios_especiais %}
+                                <li>{{ criterio }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Nenhum critério especial selecionado</li>
+                        {% endif %}
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <!-- Rodapé -->
     <div class="footer">
         <p>Este é um documento gerado eletronicamente pelo Sistema de Solicitação de Matrículas On-line.</p>
+        <div class="signature">
+            Assinatura do Responsável
+        </div>
         <img src="data:image/png;base64,{{ qr_code_img }}" alt="QR Code">
     </div>
 

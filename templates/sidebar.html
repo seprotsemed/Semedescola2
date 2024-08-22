@@ -82,6 +82,18 @@
                 <p>Cadastro de Escola</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{% url 'criar_modalidade_ensino' %}" class="nav-link">
+                <i class="fas fa-book-open nav-icon"></i>
+                <p>Modalidade de Ensino</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'criar_serie_ano' %}" class="nav-link">
+                <i class="fas fa-calendar-alt nav-icon"></i>
+                <p>Série/Ano</p>
+              </a>
+            </li>
             {% endif %}
             <li class="nav-item">
               <a href="{% url 'listar_escolas' %}" class="nav-link">

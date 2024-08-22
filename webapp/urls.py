@@ -6,6 +6,7 @@ from .views import gerar_pdf_aluno
 from .views import listar_escolas, editar_escola
 from .views import atualizar_vagas
 from .views import alterar_situacao_apto
+from .views import criar_modalidade_ensino, criar_serie_ano
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -40,4 +41,6 @@ urlpatterns = [
     path('informacao_aluno_apto/<int:aluno_id>/', views.informacao_aluno_apto, name='informacao_aluno_apto'),
     path('gerar_pdf_alunos_aptos/', views.gerar_pdf_alunos_aptos, name='gerar_pdf_alunos_aptos'),
     path('upload_csv/', views.upload_csv, name='upload_csv'),
+    path('criar-modalidade-ensino/', criar_modalidade_ensino, name='criar_modalidade_ensino'),
+    path('criar-serie-ano/', criar_serie_ano, name='criar_serie_ano'),
 ]

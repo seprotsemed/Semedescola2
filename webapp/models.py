@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class ModalidadeEnsino(models.Model):
@@ -162,8 +163,9 @@ class Aluno(models.Model):
     numero_residencia = models.CharField(max_length=10)
     complemento = models.CharField(max_length=255, blank=True, null=True)
     criterios_especiais = models.JSONField(default=list)
-    data_cadastro = models.DateField(auto_now_add=True)
+    data_cadastro = models.DateTimeField(default=timezone.now)
     hora_cadastro = models.TimeField(auto_now_add=True)
+    data_atualizacao = models.DateTimeField(auto_now=True)  # Data de atualização
 
     pontuacao = models.IntegerField(null=True, blank=True)
     ordenacao = models.IntegerField(null=True, blank=True)
@@ -192,6 +194,7 @@ class Aluno(models.Model):
         "BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 12 meses (15 pontos)": 15,
         "BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 24 meses (25 pontos)": 25,
     }
+
 
     def calcular_pontuacao(self):
         pontuacao = 0
