@@ -1,0 +1,1323 @@
+From 3a6af73d4c7eb0f6e4dbf7685f64fd7f8da22116 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Semed=20Cana=C3=A3=20dos=20Caraj=C3=A1s?=
+ <seprot@semedcanaadoscarajas.pa.gov.br>
+Date: Thu, 22 Aug 2024 17:17:42 -0300
+Subject: [PATCH] Update do sistema de Cadastro de demandas
+
+---
+ db.sqlite3                                    | Bin 237568 -> 237568 bytes
+ templates/alunos/cadastro_aluno.html          |  14 ++
+ templates/alunos/ficha_matricula.html         | 155 +++++++++---------
+ templates/criar_modalidade_ensino.html        |  64 ++++++++
+ templates/criar_serie_ano.html                |  64 ++++++++
+ templates/sidebar.html                        |  12 ++
+ webapp/__pycache__/forms.cpython-312.pyc      | Bin 14726 -> 16039 bytes
+ webapp/__pycache__/models.cpython-312.pyc     | Bin 14708 -> 14890 bytes
+ webapp/__pycache__/urls.cpython-312.pyc       | Bin 3848 -> 4066 bytes
+ webapp/__pycache__/views.cpython-312.pyc      | Bin 35963 -> 37219 bytes
+ webapp/forms.py                               |  27 ++-
+ webapp/migrations/0001_initial.py             |   5 +-
+ .../0002_alter_aluno_data_cadastro.py         |  18 ++
+ .../__pycache__/0001_initial.cpython-312.pyc  | Bin 12274 -> 12377 bytes
+ webapp/models.py                              |   5 +-
+ webapp/urls.py                                |   3 +
+ webapp/views.py                               |  32 +++-
+ .../__pycache__/settings.cpython-312.pyc      | Bin 2763 -> 2778 bytes
+ webproject/settings.py                        |   4 +-
+ 19 files changed, 317 insertions(+), 86 deletions(-)
+ create mode 100644 templates/criar_modalidade_ensino.html
+ create mode 100644 templates/criar_serie_ano.html
+ create mode 100644 webapp/migrations/0002_alter_aluno_data_cadastro.py
+
+diff --git a/db.sqlite3 b/db.sqlite3
+index 874e9b4b9e4a66f916d98cb75ad9cf9537804608..34cba0e37da5a7e7005822377a6994a750690e91 100644
+GIT binary patch
+delta 3415
+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
+G3I7X^xvg{n
+
+delta 9195
+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
+O@~6La{<O$Ud;AYQ%@XSX
+
+diff --git a/templates/alunos/cadastro_aluno.html b/templates/alunos/cadastro_aluno.html
+index 5a032b6..4f39766 100644
+--- a/templates/alunos/cadastro_aluno.html
++++ b/templates/alunos/cadastro_aluno.html
+@@ -33,6 +33,20 @@
+           {% endfor %}
+           {% endif %}
+ 
++          <div class="form-row">
++            <div class="form-group col-md-6">
++              <label for="data_cadastro">Data de Cadastro</label>
++              <input type="datetime-local" class="form-control" id="data_cadastro" name="data_cadastro" value="{{ aluno_form.instance.data_cadastro|date:'Y-m-d\\TH:i' }}">
++            </div>
++            <div class="form-group col-md-6">
++              <label for="data_atualizacao">Data de Atualização</label>
++              <input type="datetime-local" class="form-control" id="data_atualizacao" name="data_atualizacao" value="{{ aluno_form.instance.data_atualizacao|date:'Y-m-d\\TH:i' }}">
++            </div>
++          </div>
++          
++          
++          
++
+           <form id="alunoForm" method="post" action="">
+             {% csrf_token %}
+             <div class="row">
+diff --git a/templates/alunos/ficha_matricula.html b/templates/alunos/ficha_matricula.html
+index 8dc5657..7f389f2 100644
+--- a/templates/alunos/ficha_matricula.html
++++ b/templates/alunos/ficha_matricula.html
+@@ -8,7 +8,6 @@
+         @page {
+             size: A4;
+             margin: 20mm;
+-            /* Ajuste as margens conforme necessário */
+         }
+ 
+         body {
+@@ -16,7 +15,6 @@
+             color: #333;
+             margin: 0;
+             max-width: 100%;
+-            /* Certifique-se de que o conteúdo ocupe toda a largura disponível */
+         }
+ 
+         .header,
+@@ -27,86 +25,93 @@
+ 
+         .header {
+             text-align: left;
+-            border-bottom: 2px solid #4CAF50;
+-            margin-top: 0;
+-            /* Remove a margem superior para subir o cabeçalho */
+-            margin-bottom: 10px;
+-            padding-bottom: 10px;
++            border-bottom: 2px solid #000000;
++            margin-bottom: 5px;
++            padding-bottom: 5px;
+         }
+ 
+         .header img {
+-            width: 80px;
++            width: 70px;
+             float: left;
+-            margin-right: 60px;
++            margin-right: 20px;
+         }
+ 
+         .header h1 {
+-            font-size: 24px;
++            font-size: 20px;
+             margin: 0;
+-            color: #4CAF50;
++            color: #000000;
+         }
+ 
+         .header h2 {
+-            font-size: 20px;
++            font-size: 15px;
+             margin: 0;
+             color: #555;
+         }
+ 
+         .header hr {
+-            border: 1px solid #4CAF50;
+-            margin: 10px 0;
++            border: 1px solid #000000;
++            margin: 30px 0;
+         }
+ 
+         h3.section-title {
+-            font-size: 18px;
+-            margin-top: 30px;
+-            border-bottom: 2px solid #4CAF50;
+-            padding-bottom: 5px;
+-            color: #4CAF50;
++            font-size: 19px;
++            margin-top: 20px;
++            border-bottom: 2px solid #000000;
++            padding-bottom: 3px;
++            color: #000000;
+         }
+ 
+         .data-table {
+             width: 100%;
+             max-width: 100%;
+             border-collapse: collapse;
+-            margin-bottom: 30px;
+-            font-size: 14px;
++            margin-bottom: 15px;
++            font-size: 12px;
+         }
+ 
+         .data-table th,
+         .data-table td {
+             border: 1px solid #ddd;
+-            padding: 8px;
++            padding: 5px;
+             text-align: left;
+         }
+ 
+         .data-table th {
+             background-color: #f8f8f8;
+-            color: #4CAF50;
++            color: #000000;
+         }
+ 
+         .footer {
+-            margin-top: 30px;
++            margin-top: 20px;
+             text-align: center;
+-            font-size: 12px;
++            font-size: 14px;
+             color: #999;
+             position: relative;
+         }
+ 
+         .footer img {
+-            width: 130px;
++            width: 100px;
+             position: absolute;
+             right: 0;
+-            bottom: -150px;
++            bottom: -120px;
++        }
++
++        .signature {
++            margin-top: 50px;
++            border-top: 1px solid #000000;
++            width: 50%;
++            text-align: center;
++            margin-left: auto;
++            margin-right: auto;
++            padding-top: 5px;
++            font-size: 12px;
++            color: #333;
+         }
+ 
+         .centralizado {
+             text-align: center;
+-            /* Centraliza o texto dentro desta div */
+-            margin-top: 10px;
+-            /* Ajuste a margem superior conforme necessário */
+-            margin-bottom: 20px;
+-            /* Ajuste a margem inferior conforme necessário */
++            margin-top: 5px;
++            margin-bottom: 5px;
+         }
+     </style>
+ </head>
+@@ -125,24 +130,14 @@
+         </div>
+     </div>
+     
+-
+-
+     <!-- Dados do Cadastro -->
+     <div>
+         <h3 class="section-title">Dados do Cadastro</h3>
+-        <table class="data-table">
+-            <tr>
+-                <th>Responsável pelo cadastro:</th>
+-                <td>{{ responsavel_nome }}</td>
+-            </tr>
+-            <tr>
+-                <th>Protocolo:</th>
+-                <td>{{ protocolo }}</td>
+-            </tr>
+-        </table>
++        <p>Responsável pelo cadastro: <strong>{{ responsavel_nome }}</strong></p>
++        <p>Protocolo: <strong>{{ protocolo }}</strong></p>
+     </div>
+ 
+-   <!-- Criança(s) cadastrada(s) -->
++    <!-- Criança(s) cadastrada(s) -->
+ <div>
+     <h3 class="section-title">Criança(s) Cadastrada(s)</h3>
+     <table class="data-table" style="width: 100%;">
+@@ -169,57 +164,63 @@
+         <tr>
+             <th>CEP:</th>
+             <th>Telefone do Responsável:</th>
+-            <th></th> <!-- Célula vazia para completar a terceira coluna -->
++            <th></th>
+         </tr>
+         <tr>
+             <td>{{ aluno_cep }}</td>
+             <td>{{ aluno_responsavel_celular1 }}</td>
+-            <td></td> <!-- Célula vazia para completar a terceira coluna -->
++            <td></td>
+         </tr>
+-    </table>
+-</div>
+-
+-
+-
+-<!-- Unidade(s) Selecionada(s) -->
+-<div>
+-    <h3 class="section-title">Unidade(s) Selecionada(s)</h3>
+-    <table class="data-table" style="width: 100%;">
+         <tr>
+-            <th>Primeira Escolha:</th>
+-            <th>Segunda Escolha:</th>
+-            <th>Criterios:</th> <!-- Novo cabeçalho para critérios -->
++            <th>Data de Cadastro:</th>
++            <th>Data de Atualização:</th>
++            <th></th> <!-- Célula vazia para completar a terceira coluna -->
+         </tr>
+         <tr>
+-            <td>{{ primeira_escolha }}</td>
+-            <td>{{ segunda_escolha }}</td>
+-            <td>
+-                <ul>
+-                    {% if criterios_especiais %}
+-                        {% for criterio in criterios_especiais %}
+-                            <li>{{ criterio }}</li>
+-                        {% endfor %}
+-                    {% else %}
+-                        <li>Nenhum critério especial selecionado</li>
+-                    {% endif %}
+-                </ul>
+-            </td>
++            <td>{{ aluno_data_cadastro }}</td>
++            <td>{{ aluno_data_atualizacao }}</td>
++            <td></td> <!-- Célula vazia para completar a terceira coluna -->
+         </tr>
+     </table>
+ </div>
+ 
+ 
+-
+-    
+-
+-
++    <!-- Unidade(s) Selecionada(s) -->
++    <div>
++        <h3 class="section-title">Unidade(s) Selecionada(s)</h3>
++        <table class="data-table" style="width: 100%;">
++            <tr>
++                <th>Primeira Escolha:</th>
++                <th>Segunda Escolha:</th>
++                <th>Criterios:</th>
++            </tr>
++            <tr>
++                <td>{{ primeira_escolha }}</td>
++                <td>{{ segunda_escolha }}</td>
++                <td>
++                    <ul>
++                        {% if criterios_especiais %}
++                            {% for criterio in criterios_especiais %}
++                                <li>{{ criterio }}</li>
++                            {% endfor %}
++                        {% else %}
++                            <li>Nenhum critério especial selecionado</li>
++                        {% endif %}
++                    </ul>
++                </td>
++            </tr>
++        </table>
++    </div>
+ 
+     <!-- Rodapé -->
+     <div class="footer">
+         <p>Este é um documento gerado eletronicamente pelo Sistema de Solicitação de Matrículas On-line.</p>
++        <div class="signature">
++            Assinatura do Responsável
++        </div>
+         <img src="data:image/png;base64,{{ qr_code_img }}" alt="QR Code">
+     </div>
+ 
+ </body>
+ 
+-</html>
+\ No newline at end of file
++</html>
+diff --git a/templates/criar_modalidade_ensino.html b/templates/criar_modalidade_ensino.html
+new file mode 100644
+index 0000000..13e6dea
+--- /dev/null
++++ b/templates/criar_modalidade_ensino.html
+@@ -0,0 +1,64 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++    <meta charset="UTF-8">
++    <title>Criar Modalidade de Ensino</title>
++    {% load static %}
++    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
++    <link rel="stylesheet" href="{% static 'assets/dist/css/adminlte.min.css' %}">
++    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
++    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.19/dist/sweetalert2.min.css">
++</head>
++<body class="hold-transition sidebar-mini">
++    <div class="wrapper">
++        <!-- Navbar -->
++        {% include 'navbar.html' %}
++        <!-- Sidebar -->
++        {% include 'sidebar.html' %}
++
++        <div class="content-wrapper">
++            <div class="content-header">
++                <div class="container-fluid">
++                    <div class="row mb-2">
++                        <div class="col-sm-6">
++                            <h1 class="m-0">Criar Modalidade de Ensino</h1>
++                        </div>
++                    </div>
++                </div>
++            </div>
++            <div class="content">
++                <div class="container-fluid">
++                    <!-- Exibe mensagens de sucesso ou erro -->
++                    {% if messages %}
++                        <script>
++                            document.addEventListener('DOMContentLoaded', function () {
++                                {% for message in messages %}
++                                Swal.fire({
++                                    icon: '{{ message.tags }}',  // 'success' ou 'error' dependendo do contexto
++                                    title: "{{ message|escapejs }}",  // Usando escapejs para evitar problemas com caracteres especiais
++                                    showConfirmButton: true,
++                                });
++                                {% endfor %}
++                            });
++                        </script>
++                    {% endif %}
++                    <form method="post">
++                        {% csrf_token %}
++                        {{ form.as_p }}
++                        <button type="submit" class="btn btn-primary">Salvar</button>
++                    </form>
++                </div>
++            </div>
++        </div>
++
++        <!-- Footer -->
++        {% include 'footer.html' %}
++    </div>
++
++    <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
++    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
++    <script src="{% static 'assets/dist/js/adminlte.min.js' %}"></script>
++    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.19/dist/sweetalert2.all.min.js"></script>
++    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
++</body>
++</html>
+diff --git a/templates/criar_serie_ano.html b/templates/criar_serie_ano.html
+new file mode 100644
+index 0000000..3011657
+--- /dev/null
++++ b/templates/criar_serie_ano.html
+@@ -0,0 +1,64 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++    <meta charset="UTF-8">
++    <title>Criar Série/Ano</title>
++    {% load static %}
++    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
++    <link rel="stylesheet" href="{% static 'assets/dist/css/adminlte.min.css' %}">
++    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
++    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.19/dist/sweetalert2.min.css">
++</head>
++<body class="hold-transition sidebar-mini">
++    <div class="wrapper">
++        <!-- Navbar -->
++        {% include 'navbar.html' %}
++        <!-- Sidebar -->
++        {% include 'sidebar.html' %}
++
++        <div class="content-wrapper">
++            <div class="content-header">
++                <div class="container-fluid">
++                    <div class="row mb-2">
++                        <div class="col-sm-6">
++                            <h1 class="m-0">Criar Série/Ano</h1>
++                        </div>
++                    </div>
++                </div>
++            </div>
++            <div class="content">
++                <div class="container-fluid">
++                    <!-- Exibe mensagens de sucesso ou erro -->
++                    {% if messages %}
++                        <script>
++                            document.addEventListener('DOMContentLoaded', function () {
++                                {% for message in messages %}
++                                Swal.fire({
++                                    icon: '{{ message.tags }}',  // 'success' ou 'error' dependendo do contexto
++                                    title: "{{ message|escapejs }}",  // Usando escapejs para evitar problemas com caracteres especiais
++                                    showConfirmButton: true,
++                                });
++                                {% endfor %}
++                            });
++                        </script>
++                    {% endif %}
++                    <form method="post">
++                        {% csrf_token %}
++                        {{ form.as_p }}
++                        <button type="submit" class="btn btn-primary">Salvar</button>
++                    </form>
++                </div>
++            </div>
++        </div>
++
++        <!-- Footer -->
++        {% include 'footer.html' %}
++    </div>
++
++    <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
++    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
++    <script src="{% static 'assets/dist/js/adminlte.min.js' %}"></script>
++    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.19/dist/sweetalert2.all.min.js"></script>
++    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
++</body>
++</html>
+diff --git a/templates/sidebar.html b/templates/sidebar.html
+index 1368932..92d86d5 100644
+--- a/templates/sidebar.html
++++ b/templates/sidebar.html
+@@ -82,6 +82,18 @@
+                 <p>Cadastro de Escola</p>
+               </a>
+             </li>
++            <li class="nav-item">
++              <a href="{% url 'criar_modalidade_ensino' %}" class="nav-link">
++                <i class="fas fa-book-open nav-icon"></i>
++                <p>Modalidade de Ensino</p>
++              </a>
++            </li>
++            <li class="nav-item">
++              <a href="{% url 'criar_serie_ano' %}" class="nav-link">
++                <i class="fas fa-calendar-alt nav-icon"></i>
++                <p>Série/Ano</p>
++              </a>
++            </li>
+             {% endif %}
+             <li class="nav-item">
+               <a href="{% url 'listar_escolas' %}" class="nav-link">
+diff --git a/webapp/__pycache__/forms.cpython-312.pyc b/webapp/__pycache__/forms.cpython-312.pyc
+index 0eb8e73365ed2bb346d0e729f72df1b0fd77ba7e..a7681c374540da493c06133acaa09a5b98c98e21 100644
+GIT binary patch
+delta 1866
+zcmZuxZA?>F7`~@)TUzJ`LZ$7c?Jek_<x9SiZFWo)WYTJ!({+>PhI_?2Xy<J^Q>HUB
+zXo}k$?2WM~Sz*TD*AfVBW79aMKZx5*x~0ijf9ZZNOI6GglPx>vR*WOw<UIGhALn^b
+zp8LM{cyQ{l<|nmUMd9aYbYZWuepF*XU(A%bkxE8&P<-JK#p_2C)?9;RuEu5&HfdwT
+zU^mVVqLanwA}B2<b9|V=E_>7k+pQ+}*3y9X!(W!S;Jmd2-m$g<VoPAb+KL9S*9N6*
+zEAm4R`!))|HMR$OYzkm)8_)sp+C(J6ueM_-2)j!{C<J#(I$%#}19X<^(R<KS+DRY8
+zrFuv6^)O$0CRa_aj-Q8zvSFMtoIAWG8%~uOvkbfeX3Ex<;kOT6p)aFM8gCp|o=2WM
+zUdfwy#)o{!qmC5Y&9lSh$5GWGoFtkE7zpqL4r54V^IS-<%cNK;I}~|W5WUdmXwMfv
+zBH<iS;P`;QKVnzH#|{f8enz}%e2DY*ay%CdiGh?(GPzKg>-P<Ey<8wA5Bq%w!a}$L
+zXYU+fx&E*}!1e|PSRoh^*p1sZv-@vN5(DEC8eFE@W!J!$jy<}RMi9k-=p7J(L9R~-
+z!gQ0~@;>GYlJ%90qK2qNojyuGkSSKFqVlwkftM?cElh#xZk{=IBo>Yz89OrfL1NdQ
+zUmAOoR&Scdp|qS*uNrZVG@f>jIxmz>Z%Ei*O%`lSD;PLg!5{`MRWR#GULK_`ifLnX
+zTsx+{aBxnOsP0G_I@4+r(@<*bgm!|S(oSlp56){6P3|PSEv;qXUx~w1nc*m;)TI;d
+ziA_`PN%vgyyerYVBe~}Fw4QLRetxWo0e__h-{X@?a+`~ljG1IxC^b7#JfWW|o-Cf;
+zHRn$>bSG`Dw3UH-Qr<rj8mord7tNKiopJA&ce-m{m8gF$Y2LcX);ziE;CySM$(3Z?
+z4;nFRRFQ7QYAosu2~$TpOID~!XJwmI!y0g^i@;oS3LS;*)#Vrmt2<B}ZdO0ieU8N!
+z;{+xMOu|CVi)ae6)}7FwB@WUWVi$pP1kS@`bAdcUwh_3tuFm41Rre_j4|XG(wm#I+
+zbb(kYg)vBN&(<!rT*5|JfuZ*1cWj%>jeGO*va9Z?i)0PvZ1(lz{$p!N4s5Nv_QDD5
+zPRaL5ZgC4XG6hH*iWiq*2CC|h(ZnQ0XMe6&A#`Q-w}xFv{wc|sfrh5N=nR}~a?oF6
+z#~t{wX(4xpgfs-cf$?U8>MGe1xD7X&_o1s$n`?w_rfhX#cYw!(z;nE?$shFj1DgZl
+z0I6hZ$JwVTf$|`p^2mfNPd1PGkcZ|Ge7MF4cNpz<JheFy+Ae==d>%`6w-Dk|N?r)|
+ziatDND<;}ySBfp<TI&h45>UepN0ChIBi{n%o9Ol%*qg#D=)gdxh>g;VtIQ+jsQhkT
+zQOp|C$E{=5X~mo+QPY_;Zo$1#pc+<WbnL=sT;e`Lw)Q&Siv)hhE0~92i27Sb<IhWB
+z$mCyN7Dbb{LlAvJ+cRSL@rjjU@UlLchsI)*12h_eU8{YAmygRl%80_A^Em%m4oM2}
+zdrTq@6ZrqX4L8Kokjt)GsfvcEq7cuJgHNS-^A<M$z$@s)K%_B9(j=^PiTrvjkFk8E
+zIE%Kbm2-KY&U&t16+e(-1n!X%%X-O)UKlcZk+92df~uBi+Z4%{rblXAsof;aC88}P
+zDh&_m?Z-JU4Fvdbzpz2PjZK7C@GAV-!WX=PP{9a&T05#;qR4)!O9tF}#<4_ckZOsQ
+bBUP+1?i_P2QFyzgQy^95_xOmyTdBZ*0)rZM
+
+delta 968
+zcmY+COH30%7{_;Nw@X&~kh<8VwcTwAxKM;vpio}Hw<NY0A4C&hp%6$4Xj`7bfdmNn
+zAk<F<QM8RBMu;ilf@mV)pa&np$iZ;;VDwOVT-1XzOE7Vh`OWwJzklYN*_ny1zM$rv
+zTFp}Ud#rj@8_f=D49GK`?nTP>?GiWh5e=G<1ZT~Is1AOZPojEwU=g9(;)ZgI6<*_c
+z49`Zvjr?+@Rd6RX;MF9>`Y}L43VardP$Ou?bEpX##r@DAGVnt5qsx$H?L`5YvW8F)
+zMB5=0f_mFwsI%q5R~tvS;6<v#+c?;sI=WTfAQn~yCB%(}N1sxai9W-9W*nVKZ0Dtv
+znL?=#Ij>+xAcep{;3Me7SXTNjhH4~*Tw7L#+Aq}v&XZyn{K(kPNKD`w&Y(Qgyu~A_
+zVLtOLv=npZ4lD-AXj4#B5A{XI_0uZ~CW-A=#dSPfu=9wA4tvT@UeCr=lsajsY$$KI
+zEL`?9JyyCX?OoFEi!(e-+l|=wLFPBRQFd!6wI!mB&=cCIHr6_?S<Lq?36*gz4`LQ^
+zm&iPwwc$>t)V7E>a$v$6_0GEHJ&W$+OQ|Q~J9r3ZnXx-2yWeLSMY0n!r4}Nl2sdGh
+znqpP6jf=TQmqbt8LTUnhvL`D<9)#VbP4Vs?&58pT2AF`I{E!N$<ay}JxsJMFI(rx9
+za`quK0@j>$-3T$<B^V{R2kDL?6oG2TRqhTE!UPorV+0QY73x)OBy0nt(`mNR>`w|~
+zr2^5kWmQMh`i-W<gKs(+x}B>9k8#q>U^o`$gmRA;-`e=5<oqWQS4YCZdVeU;Bsho%
+zruMu{8^H3is#cZ*M{u&yAd^IoHt`H@<o41eCC_Wdp2s5eWX6?Wg;ayYGYPj`wdgkd
+zc4g2pEWCk?g11{INl8O64Sxy@>~j(lEP%PNjv<jpGJv(D-xVb#`QUO-+4=uwekBw)
+zH2IqSHKl<$Y({tlZ^HKyUw$Fd57EQguy&2Y;aVr+&?z)RKV<K+YZQssax{n?;)X3@
+L%Q}Ta`GkJ~8!8H0
+
+diff --git a/webapp/__pycache__/models.cpython-312.pyc b/webapp/__pycache__/models.cpython-312.pyc
+index 9764ce1bd932142e8911c3636fdcbe5efcbe3c23..4ab9e91d90cf7d13078775b100f2fb9631bb7218 100644
+GIT binary patch
+delta 3499
+zcmai0Yiv}<6~5zrzr23z!;2St7o4>hV>@6wHW&=9v4a!iBzO&uLvy+8y_j{^_ma80
+zE*Qch1t}&<h3Pa&)g)~mf9ir%Qdi{%Qd_AKNz{jogaW;irB<pcq5NnntfsA0sprhy
+z#lbP{UG1ltGiT16InP<4KgpH<*5`8z@NJ#{_;^Fh<?<Tx+2zL0kSxfytYg|a;Uq$t
+z@T4HyF9@=Oy%Y^yUh><VFmag^m)pbF-9Ta=*~6@Y_-nl|@hP?|7L+Uq6F$yT4pe_}
+zm#3VQDu7g3BKbL~3P{x@QUxakfD|l|Dmf_xq;QE;#Yr_lij+vz@`ek-MBsF7GRpoz
+z+Pz6)ICGh4WmZ!a_Ji;kJ6HBc;$h>K=VBG0Aq@a52sDJ_Y6Mpaoa|G}COcnnvA<j1
+zv!l7FhrMMzS}4b%AE6RJCjc>XJIb4_7*%LS=~J~<QPgu(6swRmh=B4&k{()vlL*2F
+z1S>)<0%~Qr2Q{i>Ce^2v(_A6L(cd@P-?wkTsGQbhiOtx`H{(e(im<ADJx&o&LH!B#
+z2TPd!(ze;WMLqj`d*o;K5#sc~>H?v0cF3`RJF+ei!>Vf2%KFzSAJEfURw`Yljx9NY
+zB((Tf$FE7G9d^?u0K=gjn^Mv_-LOn5IoiQ~<?13;>`T|)Ft_V2;F<LlCF#<P5@#ds
+zpMw~S=RFeWKrx*FNv~n+%jQ*$cCqW;w!}VMz`Yb%49j#zH7r?0r9H@OqujE4nb)@=
+z*asBd1`vbqyy=b|tj8B4JJ=E5_X=pHWZ==3Z-aHieoV?xs?i3Rn6dB}lHF+bY(|!3
+zh1=J#>F8p^JEZ26Nret(l&nm5;wF9-?i{Z64&3e&#dKp<()F~G&59z}o-2!Sv)5D<
+zO~~ySVsDmz-*i~hVu$}J68545NBV@8Nh><t3bWLL1)TRr#Q+aP4Dmduqe_o*U{!x!
+z&uP<Rz*KVLVGyIE<nzK^fAyu8FTT9wj25HQzt%?210S70cmco&q=ue-MjRU*>toMX
+zRvy5xHN3gZNlnb_d5LC<*5gs(934oBBV)tEhF#%N#4~Pf+>WDcgdujl@~nCLaY(wz
+z;=!sQX~lS@Nq~E3*L#?FXaZE99z&1-7Rria_FAx8<{8?GYwKoc^+82Hsi_!;*^)`P
+zq{nfKnWVn8W_XaKh9!OSIBjFw0=;$I(`(Xj3WXp{u<rz3F|RYl-U^R1H5jtvMWBv=
+zmbL#wOST-0kDNf(uc+jBq)HT{cU{|_!UY6{4Tp*a?G#t$ccI|dlv%&1v7O=AZWRTs
+z7BL#e`I?)bK^nrhaIg`9SEn;@V7632AKd&AhaIV@e<6=s|IcCPkcY#=hao8q{|6t|
+zRQ&G$&@KqCviZ<9)@!X<tdA6|Js5RsKBZ;q$Qlw%uhw6|e1&hKtxQlXQ%BkRp=x$_
+zqt~&G&&P3YvtEr~A?$EnoE?o?J)5qS758*7u`aTP*2(@{6JaBD_R7r<TILg6mda(H
+zs`HX=<Ow&(R@r)Wm1_s*%5koT&*@=z>KYF{CMV=Zxk*mSK{+JX$y;EAzb!CJ%FXZi
+zCw9qOp;7Lh6OI$P<$`mfcTPA(CiaX9$yT}_bf#vz!x8#2l`NxPma1>4h$9IT&P=yW
+zY_7h={tC`tWH;)!*m+ip?DP6)0V92oW^rvAfk%*rqoWAC=JmrUX{DQx@UUpZuPc*z
+zRhC3vIZjCTxJu2qff!yXpVLHD`?e^_GM2#7926~T2X0RmtAt5muf;Z!Z!Z2gcGc$W
+zMllvz#f~K6q?(;eY$G4DYl(j7NGpk(mcr|>K1c^qttSCebUSYF(H|k@T?F3xP<^xH
+z^J>rA)ze5DM&O3*!Vw<#P|w<pgkAu{rDbJN;yteq=4K14UF~5gc-GCEVk;J`-!G<`
+z3na?h+1~XF0{h$6w)jhU0`FrMJjUNQmf8<hd*GmW;F)~`!*r7EY56pQiDp#N)p95*
+z(^4i&&#-uFvV*^d5-12?6^4s<JyC-8%r8EVL`zyZX*d-XTBDNI=yU8`Yv;zdamBY!
+z$|)&$eVOgi!MVX@?0Rdm$Ec8{oFq!QJT%r>DJ^L<1q`Nb2XKTYG`!!?w5%ejrU=u%
+z%+*%g{tmKmZ*a?x;q(vye~lHpDz`rZ)<6CI#lvmiE!){NKX@n5bSuzwt>$|4qv-8G
+z@A(6F0}V)RxD{x))^Iz}1(a~}{LGzj^R006wbbqK&LwN$Pb{`Q0RLYE6INT~OK*cM
+z@r3|jmbm@!y!t2E!v50!`krS|nGXOAFTZ43Q*%;ITfY}oz(X;I_b)Y~f3cr-JkFmh
+zBgwDzV%~(fSNY}ebwc@ZSjY@VPD!g7@WO{k{{-PTNOywE_!;ZAh?~fVa3B6U3c4V$
+z7dsD|o$Kb}jm}0=;11`3k4a&;`z2X|$E_r5JV9pN1Jg0+stTQvlCG~r{t$4}rw}@D
+zpG#5m@J@lipsRU;9)!o-31qPIRM1UslHr$woPZ$2cb)mnHmcJ2n#vr{q$O(Rj!u_g
+z_kY-{U1uF;{|+*D_fWwrPf6;e)|$^{vO47<Xgi?EO4fYcVOX1m2(QhXHgA@^iJ8rX
+z+nJjPPgv9O{_WfaPs4mx>7}2+DuKU#1K<k_A!J#Id6$Lgve3RPG%pKr_DOf4<uoCQ
+kxxq`r7l&5_9Iwn+93(~NW-gt*cy>j=@%?~@1bI~b7nQFBIsgCw
+
+delta 3449
+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
+IY^dh{0hhM`WB>pF
+
+diff --git a/webapp/__pycache__/urls.cpython-312.pyc b/webapp/__pycache__/urls.cpython-312.pyc
+index 70c1af4a64798f6d787c6116feab0105b8140818..6d2f45725ac5ed9390a41ecedf49e5a86a27db53 100644
+GIT binary patch
+literal 4066
+zcmZ{mPfQ!x9mmIJ3^v9X2!y`|FW`U;W(Wb2fFb<zhGv(f+k`{CRPNySLMQRR&e&ub
+zRjS%kdTMftk2$((59zJPz4X+}SQ^RdNYSclFMFG6d)iZfzc<Vdc)SR`_nYtc^Zx(w
+z`$s6$&B5P)nty-(*B*}hH-6ZEotMFPCq9mQ#}STr@?61_@pv%y=DmfEOb3fQ@_fOU
+z@j=WJU*1>f%yhE26XLE+7mK?f_GkQsKqkPx{qWtL>1J^N;$SAo;%<n0GChS*CgkDH
+zI4?&#NRawoOxWFWa?<mc(4RZ3@3$UC_5wNS5OzeuF0v2EsO>vB>35L>Ku$Y^9g!O@
+zauCQ_+jnv@<RWhZdCMW}hzz^P5g_Mn-^t0SiyQ+o;ShF2#$DtDkc+nO<Rs!ECxKjY
+z2s<KEE;0(_vh6!L`NTy|1G(Z5c0^`e<SdY@w(sO5<|1zax$Y2lMCM%NJdpQn-^oeb
+zMJ9mUa0ojh3odezc9En@U4rr{yOfg?!9^|ux$O{kL~gst6(DzP-^s}x7r6@Lo<rCX
+zS#y!=w3FO*srR7#fnCbU$$b~OLH%UYrKV_*Y`N5J8Xyl`>JIHDyDqhT4SUe9Po4hQ
+z5!rW@KLGO3_MM!hUF4@gK5_^<A`e~UA&{TjzLS%mxX4GehkWKzKc^vbbXCpFT|ACI
+z`4+2+dkmjQ3Q`dQzARRLg~GW+Un$>uEIWKgE7{ViLgjNYSE334AjzVfEtBV2F<&i~
+z;$EXSFDVt!sFEw?Ma2kFB01k!MyyoDyrcqiE}n^4&5)R{u!<B3yqs9discGcHk^|s
+z;0h%IC5T99mKGJMSTe$v0ez8ZRs?}Fd{U9nub?)*C>E&NnJ=A5MZxf~T<wCaRILaG
+z>JX>_nVvyUsVo?NJ5+tAqCy3O$4u>o@g}R#M6z;G1~r7^$L}nDt3x@Fh)P8+Wo4?A
+zOGQOIr+L8`Y$vPXA5=C^g3)_jPzTN>#hw<1D1y=N(yn1_@GY37sl(XSE8WVTUSxCS
+z=Ynywy`lD(sq*Wpq`+j`t@pJ`Y9AK1TEIDnrrDObqNo#>t8I-kB^4_hEX+z|TQGXA
+zx@v^bJjJci9u8fz)u>c_UXlye?!dh!wAS9&N~n`kp)5-U>BpMrz3!`1FscgM+dtB$
+za0{SDTbIb)t5!mtQpEf@4x2S5x(5<&0n~v@!9ILY#^`rx>J+Yz&A<U|?Tg$62U+d=
+zVdq&#6jrfCQN!2IupkGp;6mGVx;(l``{*X|=n67C=Qwrp+S#|dV>Qb5gN&~~HQI6?
+zxUnE&J*;(w-3)>eyz-^SS{L4eTKC6LTMW<2wL8pe0ya0Cm3D?2td{d7kz{kqxnOiV
+zAL<CZl#<SEm9%avK@Q;v`Yf9rmn1B{Aoqg&I6iOmk{4p}thAIX6)UoID&wot2wsX+
+zIj_h(DxI(BsaP({@F3>cTFQQmaB<jF$~aMM=2?TRdbtlYqnllVS-j4TpmhPV4|xz>
+zesA|_TE2;ehcOw!WE7JzOvW+62e2H$1RuEa6edwj@NFv3V1jQ?Ife<oE#)~(@a-ta
+zF~PT?5ro0OZwuVIMdeT2cOY@!r}j5aj$u-i6XgPaGfobu^0HDYpQPCj$WvON<OBv@
+zmP;>au7V-V!3oaFQu*S0e+s6%ny1_H8dQeARLbvR`pgcG$Mcbke&i-Taw8wPY54z!
+zTV}!hH{7Pl&xF1I<o&M)ULXJQ%RhWsd!_SpW(SD>0&(QcTJy$C<Hk&VPUlxlAISgh
+z<a~kGqi@p9!B}H3RzKAFHM0v1KN{n2=)2<EVtqsB*UbRR-6#*giM>m_O}t;%`Ggrn
+zxd&t|Fj`w{jxROFmp){5K5d53>19szeXKd1YD}lJ{h#Z6#tfs?$E>khx;e4jm{`{C
+zKGgX`vmdPiW<_e%=G1y)YF*p<sm_04-au=xtu=(!O=eBMPd8_G8nZjvL+HjY&0(}g
+zm^D$O&B@iq<f^uLr1Ou>QMAUGHC{VzMphb;747~bo&U@nM{9yvbM>KSe6tbX{CWv{
+z5kY5?IrH^cGqKf3Y<>Mi=bxEV=tP;bP(N-a_Z!K5?a_(O|HAwPtyyNp>kqWuFLeHA
+zW(>t!Oia|%&Bfiu;;wecCTI?=`L<QX(Mq%}wSd+lvs&jaiPq9(sVCarQ|z#S;xZFk
+z$A25G6=sdq9&5LEb$-vhV~GczLyvY?H977p&yg3hXWp0I|8d-bC-1eGRaP)w-}>8c
+zb^eLDhUM0owouP%`_FX#*u0D4JtnSe_l~q@FLgd|-bZx<)Yp@>q2_3!F`D=g(fJ4F
+zCK@S*FMo(NSB@Ghc9|`-wwcws_z%$9@nC(Cny)!B-x!&%|3>Fi=B@{=J+!pIj245f
+c$yREg=?9iRUdw8C4sbK4QT|;}z5{3R|1J1V3jhEB
+
+literal 3848
+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
+ae|2E0GB8#8vn?gvO%bfWhK%d5vwj6;r42j)
+
+diff --git a/webapp/__pycache__/views.cpython-312.pyc b/webapp/__pycache__/views.cpython-312.pyc
+index f1e34d8d290125539436358ca6a0703900e3cc78..ee1959352df9b9261b8b855a12ec75abd7883966 100644
+GIT binary patch
+delta 8218
+zcmcIpeRNaDm48pNWXX~(e@Hg|z_!4$5&pnn4A=%^8-IWSLt-Gtfe7LEFamuz^JL=?
+zgAAqtLed3hlNuTdPMam1KufBV7FxPXw>fRuc2g6l3w<d|)1*1+_H3dg-H($r-Mx37
+zzN|Rs<e%z<U*^u-xpU{voqO**e>$#u`*~H`FH%!eIQX3(``NC}1E<nv@w;9wYvTig
+zR<O8Dp4#48&ywCHJSV0K*+;mSkQIKtOM%Xbqn80aD~_%ca*uGm_0XFa*V`cEL+^5-
+z0C0tvs^Y{nVK$8Oid3O6${UC+)gTlBdn1S{jt+CZE5%a58b>z?bAYQ^m<!k<lmM=R
+z8MZi%R-qJn+n~2BuD2cNd2w`yU<a<%0qC9|*S$t4hwe_H0&uNR3Ahe8s^U1-1HB-Q
+z?gF|xj@|(D!Z;c&wkVEX3v^AC4sg92p<{8hgX?_&=-N2?L7<n!(cQvQP-_$PE{p5k
+z40K%_y#?s{IQk)=8{+65pqC%v=0{I@D|D=gW9StcVVQ@8m4MqGGuoSiLu#F>)UJ}v
+z>wSXL?Gl`V*yfd7USGS9cw}R@NL*sGLIn?Me#INg;kadWzvw3wv?sZVub^j=w`=O5
+zH=ll*JXyO0S`zw1F{wjVjms;D!=wq?W$;fj0gQ6*7&1<ljW3@v%$rP_M;cD++v^%(
+zfUHE8xY<c9&E0LJ1$uGaX_FhK3}ur^Wu$?I(sG02`hzOIoaPuyQ<nj!T}4{qf256e
+z8Xx1E=&Q#5z(VZ6<q6w^&Lug9aLcl>&n-H=qTmpmekZ9x4lM!-B6@@>06E1u=-=&d
+z`}$p8Qj5K81r4^60PM*G_f9&aLv7e<M_?++NrRF|q-5wQR(^_wQkY1`kW1W0Ho)M5
+z;8bb>&o=}^Y3q5|Q)9Xfb|9p0*oC4mr4Y7}G?a@QA!`v9BQRZ=YD_ECnyGe49j96s
+z^h#;~&_Pi^N5p=Y<QECq1l?<BZbpEIBgv)T%{W^T6PI{42GH9#=vNef2xe}j!<h?|
+znLo~aFCWcg=M^iV6=cq?lhqw<n@A0PHLG+f_SwUlF;jkCvsCai2U^YHe{4V`kHCya
+zsMWliZ=g?_x0IrTeWF|Lc6xRS&PK8m$X)PH(gBQe<IU&0&UO*B;~Kt<JOG{KL4<DP
+ziMIgTHv^FlWgi0Rp|lt1xttfl`t7sMZDIyb$Ejb|;HsFxB^68zo0^Cy1i??2<{oAX
+z<p!s6yU=&%6ino?l`>{nsf*q#XyI#V@$B5z=(*Z8$}(=4AZwiNL9b77)#N^(*DntH
+zCG-P0=g9JVQ8L1z;DOnx=wl}e|BWx$3O#mSHW5)8@OdTYkmz>w4eZ)v*OFR#pm@_F
+zbOJfqBTAC9U$mP@FUnyT#f+_o5w;<ZRvZRTlE`+dww}mh_hE?jGvy>A(FyA;zK;ID
+zTA(=&1J4KFv>xZ{_d)X$zKWnCpYWC7uj`=2R*;j4IN)~ni4dfcB+<Q#Aam5H^c!>Y
+zH7B9xI{nAFor?3_o%2*Pu1ZcIpiJ@<!qWf{82%31I35)OZCTHP0B)O{2Kpxbprl>f
+z0Ifcrj%v)o4Yp_TGQL|nFX!)}mpp@$G`@j8r%&b=fgg8LTiFIB$i%#aZDYEPlwhHY
+zIS4t6^1hA`l}w&R(htC#nH^!|6y@{*QF?UHB{_*BY}V(1@ik<oAD2zWYkhCtX7%g^
+zC@U&j)=Hw2^zBv*(?K^>9O0j!Z&XxOMURo>zzkXKbi2tcoEtlCyrSWdMyo65R<nDX
+z1f6!hvY{uC;U5q#0?4VJXj*Z&1oAC9R#{TbwuP}OvaN6&${2D<gAkGT$2N8qxc(5l
+zQ@I^|wRS-=FI+*{&m+tSkoAHn^${1G0$UJ*a7<aIdu&q#ClvtLlN4Q<C{&Xjri9x-
+zjYu86P;Jo!fiwkwQ2hs0nH_oXP%rVa&gGT-PH&&sPF&a>=VSDzHH);UF<BG*YmGsp
+z#d`@ZZ>q~z{9>kyjowVYiojeJ&7x$N=^;FP)ny$!akQm`oGjUVA6f}FT{en>3zC`Q
+zAmlpk%@Vv)rv^LHm+RlwDqEsw8?5|QdZVF8Kyh{*!LUfo2pEcFtsuHZ$P5W;p}0s=
+zxrWR*ds;}9Q`yX@20sFZ7P@lzBW(R#`u*jdO{l|ui_5zUN)0ERprUNmZokLP1i}h2
+zb#O^?W7;ybc}2G7CUmW%+g4O0;bo-<HQDs}6~E{0^ec^4UZNKphn6rGsDV+Ek5B|4
+z>-Q0tUvvxzyGSv14gf?lxUwVKy>d|=W*9lm<ryF@k1Jx$+t9g@o?m$|wwLv6FJ`CL
+z=Xdt`L@9AA<ezYn>FT3sQ^E`~1-(xCT2n<#HtfaGoZo~d{vt8yi8qJ*8n|~sAw_<S
+z(;}t`PBw4iwJbc@>HJlN1}5|lvfQQJt4cSb_u9i12J?cL?bxh5WL=Cf-6J4VEWzHW
+zGmx;*TdNB5nGsEr(>;Xlz)S?!^-bX4LshL5c8V3;cUr%#vam&%kh>_339(bsQIhi;
+zq?vk|N&&=JYv`4Zx^@<oE+a!LfSlsn2_?f2y3~xihGTESG7_y=U6mz+fP|1sJ*#sx
+z??V4@@c8PZ>O~lQE~!}fA>W0z5_poxi_n%cV*yWch^&$(7ir77C4J12mykyT-sJTs
+zhSqI3lnh0wbB}X4PC7;`GJS{B>dpVaaTdk?MBiLD+s2~n=ZZ`nL{_Cz3jzPL!P)D5
+z{AzSs@-_fO#Mn(^3u5m~{)z=z#Ju3=<RjpFg}%{M8J~6XH{4PiI#2>z;R5~O!KT0p
+zTqjl8$qpRLMTlC31sz$_=NkmmWa3ae!ZHLjjbagu0uf*PFYNtqg#SVKUj(*!EwnI@
+zN2;DC9MK@&2nM^Im`W_0*Qjz(xlhzx3!2G2<k$)TwM~EyKJ*=ag4%l4mwK=teM(s!
+zgM@6tSAxUql=@sA(d+k-x9E6J`SwG|HGvFCUY|!KTDW|&PICDNnIGzaRFY4)W@FyR
+zt{+?ED9lWV;p`4Gc#9TqeJ6ZP3VSno%X_#OOM-vI)<uLW+V-$LfVm#R_!lNYOqz<<
+z;xR`G$Uk8(lkz^cJ^)BiMvhO;aJyV^_F1r}&)}bQ5co&A-_0&LPyh4bGpa%j{cz0^
+zTD`9%`1@@)_|_5Co_WBL@FT{V`@MWWcOb>Z327sG$_u6uHE^m=JIwT-A6c1Skst*~
+zU^0WKD%#wh#V@3X%CpKXk*^XkmJMTzW}KA+Ba5lmkxM5W*+scPp|>UcKtdjj)YBV|
+z-2CMUgFwP~0gN}&$t^j2BkDjO*pWr6b{Oc`jw}_)rlUKu>Bb#q=t?dx0#@{=gdYeg
+z9!UYTj_3gA09Si#JFDhKw&UVo;13x5Ya-Kyk`cp8_`ZPO0i%Dd(&D%g<7Hc9&VkgC
+z)IICzDNDXJ&A%baktUR0E{o1J3G-mh3YzY;nC<7(BPL-!?sde}&DqPlh@I9suLT0o
+zLq0|L3&Ljze?|B|1a^lwbaNg-g`h@ALeL;gARk^cb~{Ki_Tj~l4UZB>pHC1SE>FLl
+zrIa}An)Nvar{pKT{TVi)ZGp|Rz_zv6wz}T7zTVbNeu9!-MffSg&k$}Q{0qV_0PORW
+zT82fL8tnDZV>_$)`Skiu8^4&|-`NsiH<R6Qyxv5QO1*`x6l@s~j0mX+X$XgKbOOPI
+zB;ItA4gfU|hK7jFv1)_-5}Atu?CFVllK0T3`^tK(D1@nkA&mSh!fOb>LYM@Q(g7f*
+zP5UVicvHVfAhkj<6R!8*n;(|~ej$CEYK40x+_DvSmTr7~>Be!}oxGaY^J*ry^h_q@
+zgtS>E?Ok2w$<-ls7JXmH4gej}a{7Yt&F6d0^n{X;)^U3C$<1HuIn@)=Bb~zO3&#iV
+z6fL@4v?yf29wVnOzF@gyU2@yH<c@XaZR^ULDO1+9p;R19<Mg@Xw)0hIszN5D(>cB6
+zr1-Txr}l(0kj{*aXVqYbnbYTtYt9?b7(*7Mvz7I?p4uA9L3$Raw_OnLls4TiZ3^XP
+z(eH_K_$>MxaZVSG7BXEf7ETm~ijXb_Z6`rdD-v@!efG(Hp}E*DiQC4VqK4Z=4U@|^
+zOcibX&<3NU9e=K%g}b(}m>c;L@RR-$_zv@4|I!^;bw{eC5<DMPi{R~>sor2ua+b15
+zKd?-Db($j1;(%w2&+R13;N;fQ!0rQ(q(0kyl#dkZPwuIPLj8w(3IZ%=VD7W0#U*X5
+z))h6Fo3q?H@kI*7l5P^pNvz%EG_P;S8P*7&8ujR$xTK`zQX)<W&!ioDEt=&p)=T&A
+zJsZwXRqkd!@Ml~Z)9d~$H+&BO-&D3IDaAe0UZ<1-EXya90^4x<QUs=7_+tuF0E1m5
+zuU8@mf*W1k3yo3kZgSeu5&FIdKM{SlJ2yDsUBnwu6U8{M&?~-@0M6N;8Ga!tnlZ)T
+z;{YD5^105SSeL2BtotQSnyDLpT{8Vy`GPXzUYA?}hKgyclP0j@5bk35w62goIS_s(
+z1yzrhMqQwaJRZ0TqU>SK%&02U41*7;MshKN9-$Ut0HF$jy(Vu!Yx*nA;&j974$dc1
+zs5qPhP|~!5z$2)RlG)!e&VEjOQTK+CKD{@C)=7Qfoadw~d|(wWj3q~01(h7Dm6Tx0
+z;wY;ts*#;3`vlB^Vvuctc_TaW`6!9$oDhYd!2wol$3%b?^CM4rct_#KFUjHZI{mI8
+zAAV?he=skn4(7>*@EF_KYEXd&i-tZ7dqoSXR7LZL7X&h=Z3ar>m?mrss5pG)i0RC3
+z8ru%&GNa;=FAcF`?<jD_`vT|}egV^4!|9q%SmPr7_u(<+Hqpl)`->rF<YIbwe~ATc
+zN35vqtJqR<AN}Eedw`|9cnz6V7a*$@S@RL_`5Tvzl&{vZG0sSmB7LSDlnj%@2}nsj
+z*>R~SLpcMqvqaXzs@JLi@vjy%z??pyqQ6vV;dA5Tca!MLtyZ;)WYI@$IW%O`1|1`2
+zKKUW2W;Fghdh<X{@X7&)YL-weSf5LNfxkQ_QnB#dN&cx`I)C(C_$ZfgXtm*+AW(U3
+ze2WT)+PAT<DX|m8JTB|~qQ}uMdPJX++*v`h4=0Wy96~sZFa{u}?sU2c@kJstOZ`eE
+zK(&WUa#*td1~9^B1J-6m`7^Zna9-vF3So6YH8QBk5cM3cfdD>nxPBpCSy|J*W?fr1
+z8OF9w^a|2Gmw&f%bEEfFP9maH0Pi%8&C{}5QbX&<<`=N5eFT^I3IYo{My0OUKu5<)
+z^At^RtOvHOlqyV{WAx^j#f-OtY{U_S+j!5jf`1%4tAZ~L$DSA~)UK}PeqOC#Q?34a
+zUB#Mm^(`9@?OWv<z&`$Tvsv{zN39mCy2-Dmr)(X(jW*|H(-73I=W>ijK@}-IyE*zh
+zgC&6H&3+@Cpcaxwco+W?o<IDcywr3lp_v8c0{E5((J1za4!@z5yn%rftj%IxDYO&w
+zE(>yKj%kUujYWZ+FOW?7!3OD|j<f|PDhcG^p@ZYuuO}D%)-?A*$HjFM>!wT#>BMe}
+zJu82*pkgYka?)7&j%n_c$#yL1xA>Q=$^5!&?KfMmHBK2iCzCprze)Y=tYlX9!k%IH
+zLFMz-Df`maVa74_ky^BSR3dSKRr1g(n`f{}{&>gvb!WgTcC<?6G^^yFI2bj`!mI7q
+zTCajpS|*cP*heV)c4|M`Y*>%#=@7OA2ai_ph7$C~a)j;l^0A_T1DouK*-q+_wF#jG
+z0beo7-)taKaO}@Q%3oIYB6%F)B*JNg=Mb(U1QD(y{0QMD!fk{pgkK}PiSRB5fq{gu
+z`4IxXa|xEztU4oD@vyRkWo?!#38oc-!JEZB<#M58F*{yTKESbn34g8v=N@#6jbs?c
+z;Xh8g4>vFbUuOAxT-AN9@;=u?UpfAO`aV}1)IRw=KD~iAf2`(I=^+)gLQN|A%M&l;
+WAW`+v2(RPU@*kUZ{3@Oq`2PX7++OVf
+
+delta 7400
+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
+
+diff --git a/webapp/forms.py b/webapp/forms.py
+index 98b55c5..8785573 100644
+--- a/webapp/forms.py
++++ b/webapp/forms.py
+@@ -120,7 +120,7 @@ class AlunoForm(forms.ModelForm):
+             'responsavel_celular2', 'responsavel_email', 'necessidade_especial', 'bairro_escola', 
+             'modalidade_ensino', 'serie_ano', 'primeira_escolha', 'segunda_escolha', 
+             'cep', 'endereco', 'bairro', 'numero_residencia', 'complemento', 
+-            'criterios_especiais',
++            'criterios_especiais'
+         ]
+         widgets = {
+             'nome_completo': forms.TextInput(attrs={'class': 'form-control'}),
+@@ -146,7 +146,14 @@ class AlunoForm(forms.ModelForm):
+             'bairro': forms.TextInput(attrs={'class': 'form-control'}),
+             'numero_residencia': forms.TextInput(attrs={'class': 'form-control'}),
+             'complemento': forms.TextInput(attrs={'class': 'form-control'}),
+-            'criterios_especiais': forms.CheckboxSelectMultiple()  # Permitir múltiplas escolhas
++            'criterios_especiais': forms.CheckboxSelectMultiple(),  # Permitir múltiplas escolhas
++            'data_cadastro': forms.TextInput(attrs={'readonly': 'readonly'}),
++            'data_atualizacao': forms.TextInput(attrs={'readonly': 'readonly'}),
++        }
++        error_messages = {
++            'cpf': {
++                'unique': "Um aluno com este CPF já está cadastrado.",
++            },
+         }
+ 
+     def clean_responsavel_cpf(self):
+@@ -207,3 +214,19 @@ class EscolaForm(forms.ModelForm):
+             'vagas_disponiveis': forms.NumberInput(attrs={'class': 'form-control'}),
+         }
+ 
++class ModalidadeEnsinoForm(forms.ModelForm):
++    class Meta:
++        model = ModalidadeEnsino
++        fields = ['descricao']
++        widgets = {
++            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
++        }
++
++class SerieAnoForm(forms.ModelForm):
++    class Meta:
++        model = SerieAno
++        fields = ['descricao', 'modalidade_ensino']
++        widgets = {
++            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
++            'modalidade_ensino': forms.Select(attrs={'class': 'form-control'}),
++        }
+\ No newline at end of file
+diff --git a/webapp/migrations/0001_initial.py b/webapp/migrations/0001_initial.py
+index a9a3f99..c385716 100644
+--- a/webapp/migrations/0001_initial.py
++++ b/webapp/migrations/0001_initial.py
+@@ -1,4 +1,4 @@
+-# Generated by Django 5.0.8 on 2024-08-15 12:13
++# Generated by Django 5.0.8 on 2024-08-22 18:59
+ 
+ import django.contrib.auth.models
+ import django.contrib.auth.validators
+@@ -118,15 +118,16 @@ class Migration(migrations.Migration):
+                 ('bairro', models.CharField(max_length=255)),
+                 ('numero_residencia', models.CharField(max_length=10)),
+                 ('complemento', models.CharField(blank=True, max_length=255, null=True)),
+-                ('criterios_especiais', models.JSONField(default=list)),
+                 ('data_cadastro', models.DateField(auto_now_add=True)),
+                 ('hora_cadastro', models.TimeField(auto_now_add=True)),
++                ('data_atualizacao', models.DateTimeField(auto_now=True)),
+                 ('pontuacao', models.IntegerField(blank=True, null=True)),
+                 ('ordenacao', models.IntegerField(blank=True, null=True)),
+                 ('situacao', models.CharField(blank=True, max_length=100, null=True)),
+                 ('em_espera', models.BooleanField(default=False)),
+                 ('classificacao', models.CharField(blank=True, max_length=50, null=True)),
+                 ('observacao', models.TextField(blank=True, null=True)),
++                ('criterios_especiais', models.JSONField(default=list)),
+                 ('responsavel_cadastro', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='cadastros_realizados', to=settings.AUTH_USER_MODEL)),
+                 ('primeira_escolha', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='primeira_escolha', to='webapp.escola')),
+                 ('segunda_escolha', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='segunda_escolha', to='webapp.escola')),
+diff --git a/webapp/migrations/0002_alter_aluno_data_cadastro.py b/webapp/migrations/0002_alter_aluno_data_cadastro.py
+new file mode 100644
+index 0000000..7a9df69
+--- /dev/null
++++ b/webapp/migrations/0002_alter_aluno_data_cadastro.py
+@@ -0,0 +1,18 @@
++# Generated by Django 5.0.8 on 2024-08-22 19:10
++
++from django.db import migrations, models
++
++
++class Migration(migrations.Migration):
++
++    dependencies = [
++        ('webapp', '0001_initial'),
++    ]
++
++    operations = [
++        migrations.AlterField(
++            model_name='aluno',
++            name='data_cadastro',
++            field=models.DateTimeField(auto_now_add=True),
++        ),
++    ]
+diff --git a/webapp/migrations/__pycache__/0001_initial.cpython-312.pyc b/webapp/migrations/__pycache__/0001_initial.cpython-312.pyc
+index a9fe1528f15b9cda662cd1383794347775972b47..f945c14947e6a8ad8947bf596ce3b43c1b034cb3 100644
+GIT binary patch
+delta 1183
+zcmZ`%U2M}<81;41Bn>q+ZrT_|(k3{Kon#G-DridSN}ws_0lF5UYMN9+?N)(6P?`$p
+z28_SL%FkN9@mC7;5h;<@DV^Y<pgtfmZ3x*~ra&L2O?w&-$U<We+sk|%BpL*MI6C(`
+z-#PbO$*=mK@1}mHC@Z0TW8;qphbF1VX#V?O|5*mFD{86_We`>fVvw9f;$f1I%zIm)
+zj;gLKRgOTnnPo(j9W60@0S75Z<(C<9NyyRn%#Oi~=_9yDG3Yq_L<#6Cd|r7%%X4N7
+zOS~ub0<F+(scFfU#-7rpw&L<ql<KloC8bWo@3tg50}q$m(HJaN9<4en_GHI0WlJtP
+zhj+~9igWm!9w)`~y6plyqZ`phcu5A)B~U9^cv5b)h~K;^*1p1lCSaD?S2>xz{Px)*
+zXtTXA$k@?kIL0)hZ}pw=w>#M@83Q~eYtdCLx(jw7iWI-bOJ&!@@$7YAY>nuKZkl?>
+zbcv}oOo%seJI7SEH)AY50|yq_5cQeo$h2@Pm#E%jfj=D$4qA+*WBsx8NGuT_jSa+-
+z0$Q}hM$*at1Ia@`JNs-^1F3jgO2w1I{nGG3X&@ep59fxQk4VqX_<kuGmlEP)`A+F@
+z`VHOIyJLHi8WZv1G<3VBNe7jC>6$Mya<=8q;E#aApc*)M>Rq)#8>l9NStD~zGtmOq
+zq;O5YaO-4xy=umig<$M5%U?GYSYBcI*~tBLp4}qT9cnoTYxp4IpqH=LaFpjXyu+{7
+za9+pf{AxYDhF}`yP-M2g5Q-?F$d7ySp-*MHN44X8mSA{U2;Z$K2w_DCFZASvtuo!E
+zuH;~?;Ku2KOHXkUj7xThX6g&>km3&AAIQ5SGQC-?#VK{~w#>8ZWx82)aqyjh8$HqS
+zFC9%jS06U{N)s21d3T3QM^!%-10N7S#$p4(aIz;nv#a0<E1vK|Q{JPO4svkZ=hUvd
+zt>Xh<oyLFj;R65pTpBw3PB#u{B^a;FH{UfC_-2J~Ua;l)s7!aN8?o31?fzZnPcUsq
+zFzw%J-h}WW0x$es=FK|a0xf}vr9<aYq#4%2Twp~-Cm#G=<}J6X-8m&tO<ISHeI#Q#
+zu`M+RYJ(Tu1~zzdRZjaCQ*#)8(BNN7>;9xTl91X`^Dr0m+IN%4G+`~!oI-Q234GF*
+F{|C7pY6<`V
+
+delta 1089
+zcmZ`%OH30{6rDHF7SXZ8v<gyYN;@q~KQI;p62;0#@DoJEL=s(~GR0IeXzTy~m-xZL
+zRji){?nv4N+J(euLUduGiJ8Wlsw-D6G%*w7CvjnXZ^QsbXK`}hx#ym9Z!&K-f9_<S
+zGfX~(zn9vhZrcF!6b;^e^=&46on<Ks2}w%=ktRiT(*sD^Pg5b&_F5=q=9mvm>l}o(
+z*+ra!lGEu!u#4f%hZFP^lOzA&j>53f2KN~b9fN0#2OTHxc_*-+kjR-bds1JZ9@gf~
+zWs}owPeIJwi%vs~D>R=;7^V!JB^}FIr9C;FKSy}OIl>Q`j~e=t>l3+PWG?_)Afk)#
+ziIz>5CJyc|;7yk&vT=?2@n{hQxpr2$l8jBBrwmLq!YBqKTmTJD3i~F7Nl4_t3)+sZ
+z;*^!J1~Ig9{*ThATvPgzLr`Z8pzD7~R*C;L-fFey^eZ>8pqG!6)qh`1tbbSAn2qj(
+zH$AsfLvyy~SuI_W@Sad4+#Br-MR$d|!dt>o_|D6)Oz23B3QuVBs`YEyTEd|o<!x?H
+zIJyURJLW>%ahv`*D^=rsXvh_<vtPsNN?y=%aQUvFRCQJjmt~z*X=l|~SH{_>vQ3&n
+zgn(3xL}--+j5{P5<1MKS<73IS7!PVJ#g(XhMSMe+uSoM1W0nlRL}i0o0cmm+=ThC(
+z!yB^h>a@Fh+>&uOt89yA5y9ap!7f1^H|co5<0S4L2gXM_^VU<MXE^_pA(9Li#TBbI
+zU%V!3^QCRR(P+lDSY_)pH{RV#GTOWjfe5`6SFTF6BgU*$o0e+Ftr@9BWtVF{5iWa6
+z3`9~11KvVf7U8K^(1|K|?wv<35W(Op)lF(Bj#q_1ygMrd(n4U&oe}C)wn1AcLX*$o
+zA|{I{PEhS~d|%csr|t5nf|Klel737beDu$USH3di5~2<Q?O$PBO3Hdz=U-`RK%{Pj
+zJN`yflU^@_5B^4`nbcnlWi#@%HUz=S%G9=s_b5M<+d*^2ldB^4phGT4x8b;as`xJc
+qXCn6qq%i!*tJ~SD?Cl8!BM-nfzr3)MM#flvmUX3B*H?<Xbn!0?;YE-D
+
+diff --git a/webapp/models.py b/webapp/models.py
+index 77d65a6..7ea4cc7 100644
+--- a/webapp/models.py
++++ b/webapp/models.py
+@@ -2,6 +2,7 @@ from django.conf import settings
+ from django.db import models
+ from django.contrib.auth.models import AbstractUser
+ from django.contrib.auth.models import User
++from django.utils import timezone
+ 
+ 
+ class ModalidadeEnsino(models.Model):
+@@ -162,8 +163,9 @@ class Aluno(models.Model):
+     numero_residencia = models.CharField(max_length=10)
+     complemento = models.CharField(max_length=255, blank=True, null=True)
+     criterios_especiais = models.JSONField(default=list)
+-    data_cadastro = models.DateField(auto_now_add=True)
++    data_cadastro = models.DateTimeField(default=timezone.now)
+     hora_cadastro = models.TimeField(auto_now_add=True)
++    data_atualizacao = models.DateTimeField(auto_now=True)  # Data de atualização
+ 
+     pontuacao = models.IntegerField(null=True, blank=True)
+     ordenacao = models.IntegerField(null=True, blank=True)
+@@ -193,6 +195,7 @@ class Aluno(models.Model):
+         "BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 24 meses (25 pontos)": 25,
+     }
+ 
++
+     def calcular_pontuacao(self):
+         pontuacao = 0
+         for criterio in self.criterios_especiais:
+diff --git a/webapp/urls.py b/webapp/urls.py
+index bd95b48..0dd3c0e 100644
+--- a/webapp/urls.py
++++ b/webapp/urls.py
+@@ -6,6 +6,7 @@ from .views import gerar_pdf_aluno
+ from .views import listar_escolas, editar_escola
+ from .views import atualizar_vagas
+ from .views import alterar_situacao_apto
++from .views import criar_modalidade_ensino, criar_serie_ano
+ 
+ urlpatterns = [
+     path('', views.index, name='index'),
+@@ -40,4 +41,6 @@ urlpatterns = [
+     path('informacao_aluno_apto/<int:aluno_id>/', views.informacao_aluno_apto, name='informacao_aluno_apto'),
+     path('gerar_pdf_alunos_aptos/', views.gerar_pdf_alunos_aptos, name='gerar_pdf_alunos_aptos'),
+     path('upload_csv/', views.upload_csv, name='upload_csv'),
++    path('criar-modalidade-ensino/', criar_modalidade_ensino, name='criar_modalidade_ensino'),
++    path('criar-serie-ano/', criar_serie_ano, name='criar_serie_ano'),
+ ]
+diff --git a/webapp/views.py b/webapp/views.py
+index 73012ee..f7c5301 100644
+--- a/webapp/views.py
++++ b/webapp/views.py
+@@ -21,6 +21,7 @@ from .forms import EscolaForm  # Certifique-se de importar o formulário correta
+ from .utils import classificar_alunos  # Import the utility function
+ import csv
+ import io  # Importação necessária
++from .forms import ModalidadeEnsinoForm, SerieAnoForm
+ 
+ 
+ @login_required
+@@ -542,6 +543,9 @@ def gerar_pdf_aluno(request, aluno_id):
+     # Gera o caminho completo da logo
+     logo_url = request.build_absolute_uri(static('assets/dist/img/logo.png'))
+ 
++    # Como os critérios especiais já são armazenados como lista, apenas os atribuímos diretamente
++    criterios_especiais = aluno.criterios_especiais if aluno.criterios_especiais else []
++
+     # Dados para o template
+     context = {
+         'logo_url': logo_url,
+@@ -559,7 +563,9 @@ def gerar_pdf_aluno(request, aluno_id):
+         'primeira_escolha': aluno.primeira_escolha.nome if aluno.primeira_escolha else '',
+         'segunda_escolha': aluno.segunda_escolha.nome if aluno.segunda_escolha else '',
+         'solicitacao_encerrada': aluno.situacao,
++        'criterios_especiais': criterios_especiais,  # Adiciona os critérios especiais ao contexto
+         'qr_code_img': img_str,  # Adiciona o QR code ao contexto, já codificado em Base64
++        'aluno_data_cadastro': aluno.data_cadastro.strftime('%d/%m/%Y %H:%M:%S'),  # Formato de data e hora
+     }
+     
+     # Renderiza o template com os dados do aluno
+@@ -577,6 +583,7 @@ def gerar_pdf_aluno(request, aluno_id):
+ 
+ 
+ 
++
+ @login_required
+ def cadastro_escola(request):
+     if request.method == 'POST':
+@@ -760,7 +767,7 @@ def upload_csv(request):
+                         'necessidade_especial': necessidade_especial,
+                         'primeira_escolha': primeira_escolha,
+                         'segunda_escolha': segunda_escolha,
+-                        'status': row['status'],
++                        'status': 'ativo',  # Define o status como "ativo"
+                     }
+                 )
+ 
+@@ -771,4 +778,25 @@ def upload_csv(request):
+             messages.error(request, f'Erro ao processar o arquivo CSV: {str(e)}')
+             return redirect('upload_csv')
+ 
+-    return render(request, 'upload_csv.html')
+\ No newline at end of file
++    return render(request, 'upload_csv.html')
++
++
++def criar_modalidade_ensino(request):
++    if request.method == 'POST':
++        form = ModalidadeEnsinoForm(request.POST)
++        if form.is_valid():
++            form.save()
++            return redirect('listar_escolas')  # Redireciona para a lista de escolas, ou ajuste conforme necessário
++    else:
++        form = ModalidadeEnsinoForm()
++    return render(request, 'criar_modalidade_ensino.html', {'form': form})
++
++def criar_serie_ano(request):
++    if request.method == 'POST':
++        form = SerieAnoForm(request.POST)
++        if form.is_valid():
++            form.save()
++            return redirect('listar_escolas')  # Redireciona para a lista de escolas, ou ajuste conforme necessário
++    else:
++        form = SerieAnoForm()
++    return render(request, 'criar_serie_ano.html', {'form': form})
+diff --git a/webproject/__pycache__/settings.cpython-312.pyc b/webproject/__pycache__/settings.cpython-312.pyc
+index ed9475ea31bbc1ee2723a7873e6ba694b46b465a..a6973669499739a68cb7ef854cb5b0bfb717b383 100644
+GIT binary patch
+delta 152
+zcmX>tdP|h|G%qg~0}$x-A5Yu9k(Y<jT`Ed6MLJ3>MJ7r-l`TcKikpEUoiR!R$d&`K
+zqa=YWc`!>VMIlN$MKMYyMJY-ah~-k0Q&iHKqU0+XHB~n!FnX|xR0%rfrWR!;C+Y_$
+t=EnylmgeNUZC=Z^m5I@Gax&*{Zuthz2i*J(91l48CTDWRu^0oL0svDwCuINt
+
+delta 137
+zcmca5dRmnCG%qg~0}v?v*qpXvBQFo5J4=*kid2+Xigc8CDqD(76*mJzI%AXskSz;h
+zM@a%%a$uHJihPuGib9l3iei*35X+?~r6{K}Mafq(YN~8bVDw;Ry~P|F;=Fke+g2t<
+ev&luAzqth)I3IBHH*h@Q<egl>6~|%%v>N~x=^`Qk
+
+diff --git a/webproject/settings.py b/webproject/settings.py
+index 37eadde..8102efb 100644
+--- a/webproject/settings.py
++++ b/webproject/settings.py
+@@ -81,11 +81,11 @@ AUTH_PASSWORD_VALIDATORS = [
+ 
+ LANGUAGE_CODE = 'en-us'
+ 
+-TIME_ZONE = 'UTC'
++TIME_ZONE = 'America/Sao_Paulo'
+ 
+ USE_I18N = True
+ 
+-USE_TZ = True
++USE_TZ = False
+ 
+ STATIC_URL = '/static/'
+ 
+-- 
+2.46.0.windows.1
+
