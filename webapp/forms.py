@@ -148,6 +148,11 @@ class AlunoForm(forms.ModelForm):
             'complemento': forms.TextInput(attrs={'class': 'form-control'}),
             'criterios_especiais': forms.CheckboxSelectMultiple()  # Permitir múltiplas escolhas
         }
+        error_messages = {
+            'cpf': {
+                'unique': "Um aluno com este CPF já está cadastrado.",
+            },
+        }
 
     def clean_responsavel_cpf(self):
         responsavel_cpf = self.cleaned_data.get('responsavel_cpf')
@@ -207,3 +212,19 @@ class EscolaForm(forms.ModelForm):
             'vagas_disponiveis': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
+class ModalidadeEnsinoForm(forms.ModelForm):
+    class Meta:
+        model = ModalidadeEnsino
+        fields = ['descricao']
+        widgets = {
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class SerieAnoForm(forms.ModelForm):
+    class Meta:
+        model = SerieAno
+        fields = ['descricao', 'modalidade_ensino']
+        widgets = {
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+            'modalidade_ensino': forms.Select(attrs={'class': 'form-control'}),
+        }

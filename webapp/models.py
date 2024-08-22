@@ -193,6 +193,7 @@ class Aluno(models.Model):
         "BONIFICAÇÃO POR TEMPO DE INSCRIÇÃO - 24 meses (25 pontos)": 25,
     }
 
+
     def calcular_pontuacao(self):
         pontuacao = 0
         for criterio in self.criterios_especiais:

@@ -21,6 +21,7 @@ from .forms import EscolaForm  # Certifique-se de importar o formulário correta
 from .utils import classificar_alunos  # Import the utility function
 import csv
 import io  # Importação necessária
+from .forms import ModalidadeEnsinoForm, SerieAnoForm
 
 
 @login_required
@@ -760,7 +761,7 @@ def upload_csv(request):
                         'necessidade_especial': necessidade_especial,
                         'primeira_escolha': primeira_escolha,
                         'segunda_escolha': segunda_escolha,
-                        'status': row['status'],
+                        'status': 'ativo',  # Define o status como "ativo"
                     }
                 )
 
@@ -772,3 +773,24 @@ def upload_csv(request):
             return redirect('upload_csv')
 
     return render(request, 'upload_csv.html')
+
+
+def criar_modalidade_ensino(request):
+    if request.method == 'POST':
+        form = ModalidadeEnsinoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_escolas')  # Redireciona para a lista de escolas, ou ajuste conforme necessário
+    else:
+        form = ModalidadeEnsinoForm()
+    return render(request, 'criar_modalidade_ensino.html', {'form': form})
+
+def criar_serie_ano(request):
+    if request.method == 'POST':
+        form = SerieAnoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_escolas')  # Redireciona para a lista de escolas, ou ajuste conforme necessário
+    else:
+        form = SerieAnoForm()
+    return render(request, 'criar_serie_ano.html', {'form': form})
